@@ -4,9 +4,6 @@
   "description": "",
   "author": "",
   "license": "MIT",
-  "engines": {
-    "node": "12.14.1"
-  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -16,7 +13,6 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "postinstall": "npm run build",
-    "heroku-postbuild": "npm install && npm install --only=dev --no-shrinkwrap && npm run build",
     "lint": "eslint '{src,apps,libs,test}/**/*.ts' --fix",
     "test": "jest",
     "test:watch": "jest --watch",
