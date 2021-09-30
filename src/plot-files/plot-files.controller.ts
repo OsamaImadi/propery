@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, ValidationPipe } from '@nestjs/common';
 import { PlotFilesService } from './plot-files.service';
-import { PlotFilesDto } from './dto/plotFIles.dto';
+import { PlotFilesDto } from './dto/plotFiles.dto';
 import { UpdatePlotFilesDto } from './dto/updatePlotFiles.dto';
 
 @Controller('plot-files')

@@ -1,7 +1,7 @@
 import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PlotFilesDto } from './dto/plotFIles.dto';
+import { PlotFilesDto } from './dto/plotFiles.dto';
 import { UpdatePlotFilesDto } from './dto/updatePlotFiles.dto';
 import { PlotFiles } from './plot-files.entity';
 import { Admin } from './../admin/admin.entity';
@@ -38,8 +38,22 @@ export class PlotFilesService {
         throw new NotFoundException('Reciever found')
       }
 
-      let newFile = PlotFiles.create(file);
-      await newFile.save()
+      const plot = new PlotFiles();
+
+      plot.projectName = file.projectName;
+      plot.assignedDate = file.assignedDate;
+      plot.assignedTo = file.assignedTo;
+      plot.recievedBy = file.recievedBy;
+      plot.recievedDate = file.recievedDate;
+      plot.companyName = file.companyName;
+      plot.fileNo = file.fileNo;
+      plot.fileSecurityNo = file.fileSecurityNo;
+      plot.fileType = file.fileType;
+      plot.status = file.status;
+      plot.unitPrice = file.unitPrice;
+      plot.minimumRequiredDeposit = file.minimumRequiredDeposit;
+      
+      let newFile = await this.plotFilesRepo.save(plot);
       
       return newFile;
     }catch(err){
