@@ -6,10 +6,6 @@ import {
   UpdateDateColumn,
   BaseEntity,
 } from 'typeorm';
-import { 
-  Length,
-  IsNotEmpty,
-} from 'class-validator';
 
 @Entity()
 export class User extends BaseEntity {
@@ -38,12 +34,12 @@ export class User extends BaseEntity {
     @Column({ 
       nullable: false
     })
-    addrress1:string;
+    address1:string;
 
     @Column({ 
       nullable: true
     })
-    addrress2:string;
+    address2:string;
 
     @Column({ 
       nullable: true
