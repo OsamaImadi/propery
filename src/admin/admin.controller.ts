@@ -10,7 +10,7 @@ export class AdminController {
   @Get()
   async getMany(
   ) {
-      return await this.service.getAll();
+    return await this.service.getAll();
   }
  
   @Get(':id')

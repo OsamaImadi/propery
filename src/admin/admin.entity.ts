@@ -9,10 +9,6 @@ import {
   BeforeUpdate,
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-import { 
-  Length,
-  IsNotEmpty,
-} from 'class-validator';
 
 export async function hashIt(params: string) {
   let salt = await bcrypt.genSalt();
