@@ -9,6 +9,7 @@ import {
   BeforeUpdate,
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { PaginateableBaseEntity } from '@tfarras/nestjs-typeorm-pagination';
 
 export async function hashIt(params: string) {
   let salt = await bcrypt.genSalt();
@@ -17,7 +18,7 @@ export async function hashIt(params: string) {
 }
 
 @Entity()
-export class Admin extends BaseEntity {
+export class Admin extends PaginateableBaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;

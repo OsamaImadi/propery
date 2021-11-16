@@ -6,13 +6,10 @@ import {
   UpdateDateColumn,
   BaseEntity,
 } from 'typeorm';
-import { 
-  Length,
-  IsNotEmpty,
-} from 'class-validator';
+import { PaginateableBaseEntity } from '@tfarras/nestjs-typeorm-pagination';
 
 @Entity()
-export class Patient extends BaseEntity {
+export class Patient extends PaginateableBaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;

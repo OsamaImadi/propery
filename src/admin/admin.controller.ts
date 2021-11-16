@@ -2,6 +2,9 @@ import { Body, Controller, Delete, Get, Param, Post, Put, ValidationPipe } from 
 import { AdminService } from './admin.service';
 import { AdminDto } from './dto/admin.dto';
 import { AdminUpdateDto } from './dto/adminUpdate.dto';
+import { PgParams, PaginationParams, Pagination } from '@tfarras/nestjs-typeorm-pagination';
+import { Admin } from 'src/admin/admin.entity';
+ 
 
 @Controller('admin')
 export class AdminController {
@@ -11,6 +14,17 @@ export class AdminController {
   async getMany(
   ) {
     return await this.service.getAll();
+  }
+
+  @Get('paginated')
+  getPaginated(
+    @PgParams() pg: PaginationParams,
+  ): Promise<Pagination<Admin>> {
+    pg._limit = pg._limit || 10;
+    pg._start = pg._start || 0;
+    pg._sortBy = pg._sortBy || 'id';
+    pg._order = pg._order || 'DESC';
+    return Admin.findAndPaginate(pg);
   }
  
   @Get(':id')

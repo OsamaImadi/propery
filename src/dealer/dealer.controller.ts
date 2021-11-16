@@ -2,6 +2,8 @@ import { Body, Controller, Delete, Get, Param, Post, Put, ValidationPipe } from 
 import { DealerService } from './dealer.service';
 import { DealerDto } from './dto/dealer.dto';
 import { DealerUpdateDto } from './dto/dealer.update.dto';
+import { Dealer } from './dealer.entity';
+import { PgParams, PaginationParams, Pagination } from '@tfarras/nestjs-typeorm-pagination';
 
 @Controller('dealer')
 export class DealerController {
@@ -10,7 +12,18 @@ export class DealerController {
   @Get()
   async getMany(
   ) {
-      return await this.service.getAll();
+    return await this.service.getAll();
+  }
+
+  @Get('paginated')
+  getPaginated(
+    @PgParams() pg: PaginationParams,
+  ): Promise<Pagination<Dealer>> {
+    pg._limit = pg._limit || 10;
+    pg._start = pg._start || 0;
+    pg._sortBy = pg._sortBy || 'id';
+    pg._order = pg._order || 'DESC';
+    return Dealer.findAndPaginate(pg);
   }
  
   @Get(':id')

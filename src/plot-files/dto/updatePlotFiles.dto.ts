@@ -53,4 +53,8 @@ export class UpdatePlotFilesDto {
   @IsNumber()
   @IsOptional()
   minimumRequiredDeposit: number;
+
+  @IsNumber()
+  @IsOptional()
+  depositPercentage: number;
 }

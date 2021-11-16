@@ -13,6 +13,7 @@ import { PlotFiles } from './plot-files/plot-files.entity';
 import { Dealer } from './dealer/dealer.entity';
 import { Admin } from './admin/admin.entity';
 import { User } from './user/user.entity';
+import { RecordsModule } from './records/records.module';
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ dotenv.config();
     }
     ),
     TypeOrmModule.forFeature([PlotFiles, Dealer, Admin, User]),
+    RecordsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

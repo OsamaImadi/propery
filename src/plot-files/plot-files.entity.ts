@@ -6,13 +6,10 @@ import {
   UpdateDateColumn,
   BaseEntity,
 } from 'typeorm';
-import { 
-  Length,
-  IsNotEmpty,
-} from 'class-validator';
+import { PaginateableBaseEntity } from '@tfarras/nestjs-typeorm-pagination';
 
 @Entity()
-export class PlotFiles extends BaseEntity {
+export class PlotFiles extends PaginateableBaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -71,7 +68,7 @@ export class PlotFiles extends BaseEntity {
     companyName:string;
     
     @Column({
-      nullable: true
+      nullable: false
     })
     unitPrice:number;
     
@@ -79,6 +76,11 @@ export class PlotFiles extends BaseEntity {
       nullable: true
     })
     minimumRequiredDeposit:number;
+    
+    @Column({
+      nullable: true
+    })
+    depositPercentage:number;
 
     @CreateDateColumn({ type: 'timestamp' })
     createdAt!: Date;

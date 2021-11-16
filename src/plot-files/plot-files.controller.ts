@@ -2,6 +2,9 @@ import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, ValidationP
 import { PlotFilesService } from './plot-files.service';
 import { PlotFilesDto } from './dto/plotFiles.dto';
 import { UpdatePlotFilesDto } from './dto/updatePlotFiles.dto';
+import { PlotFiles } from './plot-files.entity';
+import { PgParams, PaginationParams, Pagination } from '@tfarras/nestjs-typeorm-pagination';
+import { NotesDto } from './dto/note.dto';
 
 @Controller('plot-files')
 export class PlotFilesController {
@@ -10,13 +13,45 @@ export class PlotFilesController {
   @Get()
   async getMany(
   ) {
-      return await this.service.getAll();
+    return await this.service.getAll();
+  }
+
+  @Get('bulk')
+  async getBulkPaginated(
+    @PgParams() pg: PaginationParams,
+    @Body(ValidationPipe) file: UpdatePlotFilesDto
+  ){
+    return await this.service.bulkAssignFiles(pg,file)
+  }
+
+  @Get('paginated')
+  getPaginated(
+    @PgParams() pg: PaginationParams,
+  ): Promise<Pagination<PlotFiles>> {
+    pg._limit = pg._limit || 10;
+    pg._start = pg._start || 0;
+    pg._sortBy = pg._sortBy || 'id';
+    pg._order = pg._order || 'DESC';
+    return PlotFiles.findAndPaginate(pg);
+  }
+ 
+  @Get('notes/:id')
+  getNotesbyId(@Param() params
+  ) {
+    return this.service.getNotesByFile(params.id);
   }
  
   @Get(':id')
   getbyId(@Param() params
   ) {
     return this.service.getOne(params.id);
+  }
+
+  @Post('/notes')
+  createNote(
+    @Body(ValidationPipe) note: NotesDto
+  ) {
+    return this.service.createNote(note);
   }
 
   @Post('')

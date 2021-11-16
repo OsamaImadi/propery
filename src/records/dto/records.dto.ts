@@ -5,11 +5,15 @@ import {
   IsNotEmpty,
 } from 'class-validator';
 
-export class PlotFilesDto {
+export class RecordsDto {
 
   @IsString()
   @IsNotEmpty()
   fileNo: string;
+
+  @IsString()
+  @IsNotEmpty()
+  type: string;
 
   @IsString()
   @IsNotEmpty()

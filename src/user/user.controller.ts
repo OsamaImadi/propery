@@ -2,6 +2,8 @@ import { Body, Controller, Delete, Get, Param, Post, Put, ValidationPipe } from 
 import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { UserUpdateDto } from './dto/userUpdate.dto';
+import { User } from './user.entity';
+import { PgParams, PaginationParams, Pagination } from '@tfarras/nestjs-typeorm-pagination';
 
 @Controller('user')
 export class UserController {
@@ -10,7 +12,18 @@ export class UserController {
   @Get()
   async getMany(
   ) {
-      return await this.service.getAll();
+    return await this.service.getAll();
+  }
+
+  @Get('paginated')
+  getPaginated(
+    @PgParams() pg: PaginationParams,
+  ): Promise<Pagination<User>> {
+    pg._limit = pg._limit || 10;
+    pg._start = pg._start || 0;
+    pg._sortBy = pg._sortBy || 'id';
+    pg._order = pg._order || 'DESC';
+    return User.findAndPaginate(pg);
   }
  
   @Get(':id')
