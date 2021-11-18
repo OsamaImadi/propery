@@ -15,12 +15,18 @@ import { FileNotes } from './file-note.entity';
 import { NotesDto } from './dto/note.dto';
 import { RecordsService } from 'src/records/records.service';
 import { PaginationParams } from '@tfarras/nestjs-typeorm-pagination';
+import { Dealer } from './../dealer/dealer.entity';
+import { User } from './../user/user.entity';
+import { Records } from 'src/records/records.entity';
+var XLSX = require('xlsx');
 
 @Injectable()
 export class PlotFilesService {
   constructor(
     @InjectRepository(PlotFiles) private plotFilesRepo: Repository<PlotFiles>,
     @InjectRepository(Admin) private adminRepo: Repository<Admin>,
+    @InjectRepository(Dealer) private dealerRepo: Repository<Dealer>,
+    @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(FileNotes) private fileNotesRepo: Repository<FileNotes>,
   ) { }
   private recordsService: RecordsService
@@ -29,6 +35,32 @@ export class PlotFilesService {
     return record
   }
 
+  async createFileRecord(fileObj: PlotFiles, type:'ASSIGNMENT_CHANGE' | 'PRICE_CHANGE' ){
+    try{
+      let file = await this.plotFilesRepo.findOne({where:{fileNo: fileObj.fileNo}})
+      if(!file) throw new NotFoundException('File not found')
+      let newFile = Records.create({
+        fileNo: file.fileNo,
+        type: type,
+        fileObject: file
+      });
+      await newFile.save()
+      
+      return newFile;
+    }catch(err){
+      if(err.errno==1062){
+        throw new ConflictException('File already exists')
+      }
+      if(err.errno==1364){
+        throw new BadRequestException(err.message)
+      }
+      if(err.code==23505){
+        throw new ConflictException(err.message)
+      }
+      throw new InternalServerErrorException(err.message)
+    }
+
+  }
   async getOne(id: number) {
     const file = await this.plotFilesRepo.findOne(id);
     if (!file) throw new NotFoundException('No record found');
@@ -78,15 +110,31 @@ export class PlotFilesService {
 
   async createFile(file: PlotFilesDto){
     try{
-
-      let assignee = await this.adminRepo.findOne(file.assignedTo)
+      let issuer:`user` | 'admin' | 'dealer' = 'admin', recieving:`user` | 'admin' | 'dealer' = 'admin'
+      let assignee:any = await this.adminRepo.findOne(file.assignedTo)
       if(!assignee){
+        assignee = await this.dealerRepo.findOne(file.recievedBy)
+        issuer='dealer'
+        if(!assignee){
+          assignee = await this.userRepo.findOne(file.recievedBy)
+          issuer = 'user'
+        }
+        if(!assignee){
         throw new NotFoundException('Assignee not found')
       }
+    }
 
-      let reciever = await this.adminRepo.findOne(file.recievedBy)
+      let reciever:any = await this.adminRepo.findOne(file.recievedBy)
       if(!reciever){
-        throw new NotFoundException('Reciever found')
+        reciever = await this.dealerRepo.findOne(file.recievedBy)
+        recieving = 'dealer'
+        if(!reciever){
+          reciever = await this.userRepo.findOne(file.recievedBy)
+          recieving = 'user'
+        }
+        if(!reciever){
+          throw new NotFoundException('Reciever found')
+        }
       }
 
       const plot = new PlotFiles();
@@ -103,6 +151,8 @@ export class PlotFilesService {
       plot.status = file.status;
       plot.unitPrice = file.unitPrice;
       plot.minimumRequiredDeposit = file.minimumRequiredDeposit;
+      plot.lastfileAssigner = issuer;
+      plot.lastfileReciever = recieving
       
       let newFile = await this.plotFilesRepo.save(plot);
       
@@ -174,19 +224,33 @@ export class PlotFilesService {
       })
 
       let files = []
-      ids.forEach(async (id)=>{
-        let fileUpdated = await this.plotFilesRepo.update(
-          id,
-          assignmentInfo
-        );
-        let file = await this.plotFilesRepo.findOne(id)
-        await this.recordsService.createFile(file, 'ASSIGNMENT_CHANGE')
-        files.push(file)
-      })
+      console.log(ids)
+      for (let i=0; i<ids.length; i++){
+        let file = await this.plotFilesRepo.findOne(ids[i].id)
 
-      return files;
+            file.projectName= assignmentInfo.projectName || file.projectName,
+            file.assignedDate= assignmentInfo.assignedDate || file.assignedDate,
+            file.assignedTo= assignmentInfo.assignedTo || file.assignedTo,
+            file.recievedBy= assignmentInfo.recievedBy || file.recievedBy,
+            file.recievedDate= assignmentInfo.recievedDate || file.recievedDate,
+            file.companyName= assignmentInfo.companyName || file.companyName,
+            file.fileNo= assignmentInfo.fileNo || file.fileNo,
+            file.fileSecurityNo= assignmentInfo.fileSecurityNo || file.fileSecurityNo,
+            file.fileType= assignmentInfo.fileType || file.fileType,
+            file.status= assignmentInfo.status || file.status,
+            file.unitPrice= assignmentInfo.unitPrice || file.unitPrice,
+            file.minimumRequiredDeposit= assignmentInfo.minimumRequiredDeposit || file.minimumRequiredDeposit,
+
+            await file.save()
+
+        await this.createFileRecord(file, 'ASSIGNMENT_CHANGE')
+        files.push(file)
+      }
+        return files;
+
 
     }catch(err){
+      console.log(err)
       if(err.errno==1062){
         throw new ConflictException('Admin already exists')
       }
@@ -198,6 +262,82 @@ export class PlotFilesService {
       }
       throw new InternalServerErrorException(err.message)
     }
+  }
+
+  async upload(file:any){
+    try{
+      var workbook = XLSX.read(file.buffer, {type:'buffer'});
+      var sheetNames = workbook.SheetNames;
+  
+      var sheetIndex = 1;
+      var df = XLSX.utils.sheet_to_json(workbook.Sheets[sheetNames[sheetIndex-1]]);
+      df.forEach(function(e, i) {
+        Object.keys(e).forEach(function(key) {
+          var val = e[key],
+            newKey = key.replace(/\s+/g, '_');
+          delete df[i][key];
+          df[i][newKey] = val;
+          
+        });
+      });
+  
+      df.forEach(async (element) => {
+        let userIssued:any;
+        let userRecieved:any;
+        let issuer:`user` | 'admin' | 'dealer' = 'admin', reciever:`user` | 'admin' | 'dealer' = 'admin'
+        userIssued = await this.adminRepo.findOne({where:{phoneNo: element.Issued_To}})
+        if(!userIssued){
+          userIssued = await this.dealerRepo.findOne({where:{phoneNo: element.Issued_To}})
+          issuer='dealer'
+          if(!userIssued){
+            userIssued = await this.userRepo.findOne({where:{phoneNo: element.Issued_To}})
+            issuer='user'
+            if(!userIssued){
+              throw new NotFoundException(`No user with phone number: ${element.Issued_To}`)
+            }
+          }
+        }
+  
+        userRecieved = await this.adminRepo.findOne({where:{phoneNo: element.Received_By}})
+        if(!userRecieved){
+          userRecieved = await this.dealerRepo.findOne({where:{phoneNo: element.Received_By}})
+          if(!userRecieved){
+            userRecieved = await this.userRepo.findOne({where:{phoneNo: element.Received_By}})
+            if(!userRecieved){
+              throw new NotFoundException(`No User with phone number: ${element.Received_By}`)
+            }
+          }
+        }
+  
+        let file = {
+          fileNo: element[`File_No.`],
+          fileSecurityNo: element.Security_Code,
+          fileType: element.File_Type,
+          projectName: element.Project_Name,
+          status: element.Status,
+          assignedTo: userIssued.id,
+          assignedDate: element.Issued_Date,
+          recievedBy: userRecieved.id,
+          recievedDate: element.Received_Date,
+          companyName: element.Company,
+          unitPrice: element.Unit_Price,
+          minimumRequiredDeposit: element.Minimum_Deposit,
+          lastfileAssigner: issuer,
+          lastfileReciever: reciever
+
+        }
+  
+        let newFile = PlotFiles.create(file);
+        await newFile.save()
+      });
+  
+      
+  
+      return 'files added successfully'
+    }catch(err){
+      throw err
+    }
+    
   }
 
   async deleteFile(id:number){

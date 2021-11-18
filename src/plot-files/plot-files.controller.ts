@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFile, UseGuards, UseInterceptors, ValidationPipe } from '@nestjs/common';
 import { PlotFilesService } from './plot-files.service';
 import { PlotFilesDto } from './dto/plotFiles.dto';
 import { UpdatePlotFilesDto } from './dto/updatePlotFiles.dto';
 import { PlotFiles } from './plot-files.entity';
 import { PgParams, PaginationParams, Pagination } from '@tfarras/nestjs-typeorm-pagination';
 import { NotesDto } from './dto/note.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('plot-files')
 export class PlotFilesController {
@@ -52,6 +53,21 @@ export class PlotFilesController {
     @Body(ValidationPipe) note: NotesDto
   ) {
     return this.service.createNote(note);
+  }
+
+  
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(@UploadedFile() file) {
+    return await this.service.upload(file)
+  }
+  
+  @Post('bulk-assign')
+  async bulkAssign(
+    @Body(ValidationPipe) file: UpdatePlotFilesDto,
+    @PgParams() pg: PaginationParams
+    ) {
+    return await this.service.bulkAssignFiles(pg,file)
   }
 
   @Post('')

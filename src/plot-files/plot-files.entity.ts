@@ -81,6 +81,16 @@ export class PlotFiles extends PaginateableBaseEntity {
       nullable: true
     })
     depositPercentage:number;
+    
+    @Column({
+      nullable: true
+    })
+    lastfileAssigner:string;
+    
+    @Column({
+      nullable: true
+    })
+    lastfileReciever:string;;
 
     @CreateDateColumn({ type: 'timestamp' })
     createdAt!: Date;
