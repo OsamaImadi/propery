@@ -7,7 +7,7 @@ import * as dotenv from 'dotenv';
 import { Repository } from 'typeorm';
 import { Admin } from 'src/admin/admin.entity';
 dotenv.config();
-const jwtSecret = "PropertyExpert";
+const jwtSecret = process.env.JWT_SECRET;
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

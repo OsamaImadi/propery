@@ -27,10 +27,16 @@ dotenv.config();
     UserModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: 'postgres://exvviwtk:0_1h7ts3WzVhIk_1et5ZpGJfphVkE-2W@fanny.db.elephantsql.com/exvviwtk',
+      url: process.env.DATABASE_URL,
       entities: [
         __dirname + '/**/*.entity{.ts,.js}',
       ],
+      ssl: true,
+      extra: {
+        ssl: {
+          rejectUnauthorized: false
+        }
+      },
       synchronize: true
     }
     ),

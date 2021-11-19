@@ -151,6 +151,8 @@ export class PlotFilesService {
       plot.status = file.status;
       plot.unitPrice = file.unitPrice;
       plot.minimumRequiredDeposit = file.minimumRequiredDeposit;
+      plot.discountPercentage = file.discountPercentage;
+      plot.depositPercentage = file.depositPercentage;
       plot.lastfileAssigner = issuer;
       plot.lastfileReciever = recieving
       
