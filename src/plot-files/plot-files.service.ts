@@ -243,6 +243,7 @@ export class PlotFilesService {
             file.unitPrice= assignmentInfo.unitPrice || file.unitPrice,
             file.minimumRequiredDeposit= assignmentInfo.minimumRequiredDeposit || file.minimumRequiredDeposit,
             file.discountPercentage= assignmentInfo.discountPercentage || file.discountPercentage,
+            file.depositPercentage= assignmentInfo.depositPercentage || file.depositPercentage,
 
             await file.save()
 
