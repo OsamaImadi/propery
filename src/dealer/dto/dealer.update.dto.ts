@@ -26,6 +26,10 @@ export class DealerUpdateDto {
   @IsString()
   @IsOptional()
   dealerType: string;
+  
+  @IsString()
+  @IsOptional()
+  name: string;
 
   @IsString()
   @IsOptional()

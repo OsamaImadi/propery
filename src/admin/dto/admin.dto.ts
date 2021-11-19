@@ -51,6 +51,10 @@ export class AdminDto {
 
   @IsString()
   @IsOptional()
+  name: string;
+
+  @IsString()
+  @IsOptional()
   subDealerId: string;
 
   @IsNumber()

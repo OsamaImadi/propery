@@ -1,7 +1,7 @@
 import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { async } from 'rxjs';
-import { Repository } from 'typeorm';
+import { getRepository, Like, Repository } from 'typeorm';
 import { Admin } from './admin.entity';
 import { AdminDto } from './dto/admin.dto';
 import { AdminUpdateDto } from './dto/adminUpdate.dto';
@@ -15,6 +15,13 @@ export class AdminService {
   
   async getAll() {
     let record = await this.adminRepo.find()
+    return record
+  }
+  
+  async getBySearch(name: any) {
+    let record = await this.adminRepo.find({
+        name: Like(`${name.name}%`)
+    });
     return record
   }
 

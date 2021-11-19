@@ -1,7 +1,7 @@
 import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Admin } from 'src/admin/admin.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Dealer } from './dealer.entity';
 import { DealerDto } from './dto/dealer.dto';
 import { DealerUpdateDto } from './dto/dealer.update.dto';
@@ -22,6 +22,13 @@ export class DealerService {
     const dealer = await this.dealerRepo.findOne(id);
     if (!dealer) throw new NotFoundException('No record found');
     return dealer;
+  }
+
+  async getBySearch(name: any) {
+    let record = await this.dealerRepo.find({
+        name: Like(`${name.name}%`)
+    });
+    return record
   }
   
   async createDealer(dealer: DealerDto){

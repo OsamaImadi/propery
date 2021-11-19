@@ -57,4 +57,8 @@ export class UpdatePlotFilesDto {
   @IsNumber()
   @IsOptional()
   depositPercentage: number;
+
+  @IsNumber()
+  @IsOptional()
+  discountPercentage: number;
 }

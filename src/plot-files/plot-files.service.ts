@@ -240,6 +240,7 @@ export class PlotFilesService {
             file.status= assignmentInfo.status || file.status,
             file.unitPrice= assignmentInfo.unitPrice || file.unitPrice,
             file.minimumRequiredDeposit= assignmentInfo.minimumRequiredDeposit || file.minimumRequiredDeposit,
+            file.discountPercentage= assignmentInfo.discountPercentage || file.discountPercentage,
 
             await file.save()
 

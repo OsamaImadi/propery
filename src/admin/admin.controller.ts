@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, ValidationPipe } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { AdminDto } from './dto/admin.dto';
 import { AdminUpdateDto } from './dto/adminUpdate.dto';
@@ -14,6 +14,13 @@ export class AdminController {
   async getMany(
   ) {
     return await this.service.getAll();
+  }
+
+  @Get('search')
+  async getSearch(
+    @Query() query
+  ) {
+    return await this.service.getBySearch(query);
   }
 
   @Get('paginated')

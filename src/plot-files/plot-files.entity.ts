@@ -80,6 +80,11 @@ export class PlotFiles extends PaginateableBaseEntity {
     @Column({
       nullable: true
     })
+    discountPercentage:number;
+    
+    @Column({
+      nullable: true
+    })
     depositPercentage:number;
     
     @Column({
@@ -90,7 +95,7 @@ export class PlotFiles extends PaginateableBaseEntity {
     @Column({
       nullable: true
     })
-    lastfileReciever:string;;
+    lastfileReciever:string;
 
     @CreateDateColumn({ type: 'timestamp' })
     createdAt!: Date;

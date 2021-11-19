@@ -10,6 +10,10 @@ export class AdminUpdateDto {
   @IsString()
   @IsOptional()
   email: string;
+  
+  @IsString()
+  @IsOptional()
+  name: string;
 
   @IsString()
   @IsOptional()

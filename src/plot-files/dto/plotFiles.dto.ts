@@ -58,4 +58,8 @@ export class PlotFilesDto {
   @IsNumber()
   @IsOptional()
   depositPercentage: number;
+
+  @IsNumber()
+  @IsOptional()
+  discountPercentage: number;
 }

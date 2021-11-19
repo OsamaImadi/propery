@@ -29,6 +29,11 @@ export class Admin extends PaginateableBaseEntity {
     })
     email:string;
 
+    @Column({
+      nullable: true
+    })
+    name:string;
+
     @Column({ 
       unique: true,
       nullable: false,

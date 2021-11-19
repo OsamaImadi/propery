@@ -38,6 +38,10 @@ export class DealerDto {
   @IsString()
   @IsOptional()
   subDealerId: string;
+  
+  @IsString()
+  @IsOptional()
+  name: string;
 
   @IsNumber()
   @IsOptional()
