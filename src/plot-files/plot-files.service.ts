@@ -181,6 +181,7 @@ export class PlotFilesService {
       if(file.assignedTo){
           
           let assignee:any = await this.adminRepo.findOne(file.assignedTo)
+          issuer='admin'
           if(!assignee){
             assignee = await this.dealerRepo.findOne(file.recievedBy)
             issuer='dealer'
@@ -195,6 +196,7 @@ export class PlotFilesService {
       }
       if(file.recievedBy){
         let reciever:any = await this.adminRepo.findOne(file.recievedBy)
+        recieving = 'admin'
         if(!reciever){
           reciever = await this.dealerRepo.findOne(file.recievedBy)
           recieving = 'dealer'
