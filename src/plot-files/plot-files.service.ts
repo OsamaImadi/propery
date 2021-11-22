@@ -177,16 +177,34 @@ export class PlotFilesService {
 
   async updateFile(file: UpdatePlotFilesDto, id:number){
     try{
+      let issuer: string, recieving: string;
       if(file.assignedTo){
-        let assignee = await this.adminRepo.findOne(file.assignedTo)
-        if(!assignee){
-          throw new NotFoundException('Assignee not found')
+          
+          let assignee:any = await this.adminRepo.findOne(file.assignedTo)
+          if(!assignee){
+            assignee = await this.dealerRepo.findOne(file.recievedBy)
+            issuer='dealer'
+            if(!assignee){
+              assignee = await this.userRepo.findOne(file.recievedBy)
+              issuer = 'user'
+            }
+            if(!assignee){
+            throw new NotFoundException('Assignee not found')
+          }
         }
       }
       if(file.recievedBy){
-        let reciever = await this.adminRepo.findOne(file.recievedBy)
+        let reciever:any = await this.adminRepo.findOne(file.recievedBy)
         if(!reciever){
-          throw new NotFoundException('Reciever found')
+          reciever = await this.dealerRepo.findOne(file.recievedBy)
+          recieving = 'dealer'
+          if(!reciever){
+            reciever = await this.userRepo.findOne(file.recievedBy)
+            recieving = 'user'
+          }
+          if(!reciever){
+            throw new NotFoundException('Reciever found')
+          }
         }
       }
       let fileExisiting = await this.plotFilesRepo.findOne(id)
@@ -195,7 +213,7 @@ export class PlotFilesService {
       }
       await this.plotFilesRepo.update(
         id,
-        file
+        {...file, lastfileAssigner: issuer, lastfileReciever: recieving}
       );
 
       let updatedFile = await this.plotFilesRepo.findOne(id)
@@ -276,7 +294,7 @@ export class PlotFilesService {
   
       var sheetIndex = 1;
       var df = XLSX.utils.sheet_to_json(workbook.Sheets[sheetNames[sheetIndex-1]]);
-      df.forEach(function(e, i) {
+      df.forEach(function(e: { [x: string]: any; }, i: string | number) {
         Object.keys(e).forEach(function(key) {
           var val = e[key],
             newKey = key.replace(/\s+/g, '_');
@@ -286,7 +304,7 @@ export class PlotFilesService {
         });
       });
   
-      df.forEach(async (element) => {
+      df.forEach(async (element: { [x: string]: any; Issued_To: any; Received_By: any; Security_Code: any; File_Type: any; Project_Name: any; Status: any; Issued_Date: any; Received_Date: any; Company: any; Unit_Price: any; Minimum_Deposit: any; }) => {
         let userIssued:any;
         let userRecieved:any;
         let issuer:`user` | 'admin' | 'dealer' = 'admin', reciever:`user` | 'admin' | 'dealer' = 'admin'
