@@ -174,6 +174,7 @@ export class PlotFilesService {
 
   }
 
+
   async updateFile(file: UpdatePlotFilesDto, id:number){
     try{
       if(file.assignedTo){
@@ -199,7 +200,7 @@ export class PlotFilesService {
 
       let updatedFile = await this.plotFilesRepo.findOne(id)
 
-      await this.recordsService.createFile(updatedFile, 'ASSIGNMENT_CHANGE')
+      await this.createFileRecord(updatedFile, 'ASSIGNMENT_CHANGE')
 
       return await this.plotFilesRepo.findOne(id);   
 

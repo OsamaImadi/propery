@@ -67,12 +67,14 @@ export class PlotFiles extends PaginateableBaseEntity {
     })
     companyName:string;
     
-    @Column({
-      nullable: false
+    @Column(
+      "decimal",{
+      nullable: true
     })
     unitPrice:number;
     
-    @Column({
+    @Column(
+      "decimal",{
       nullable: true
     })
     minimumRequiredDeposit:number;
