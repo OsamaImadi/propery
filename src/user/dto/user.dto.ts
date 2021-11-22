@@ -30,6 +30,10 @@ export class UserDto {
   @IsString()
   @IsOptional()
   address2: string;
+    
+  @IsString()
+  @IsOptional()
+  name: string;
 
   @IsString()
   @IsNotEmpty()

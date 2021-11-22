@@ -85,6 +85,11 @@ export class PlotFilesController {
     return this.service.updateFile(file, params.id);
   }
 
+  @Delete('clear')
+  turncate() {
+    return this.service.truncate();
+  }
+
   @Delete('/:id')
   delete(
     @Param() params

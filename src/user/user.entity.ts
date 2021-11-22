@@ -31,6 +31,11 @@ export class User extends PaginateableBaseEntity  {
       nullable: false
     })
     CNIC:string;
+    
+    @Column({ 
+      nullable: true
+    })
+    name:string;
 
     @Column({ 
       nullable: false

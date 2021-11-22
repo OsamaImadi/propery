@@ -17,6 +17,10 @@ export class UserUpdateDto {
   @IsString()
   @IsOptional()
   CNIC: string;
+  
+  @IsString()
+  @IsOptional()
+  name: string;
 
   @IsString()
   @IsOptional()
