@@ -355,8 +355,8 @@ export class PlotFilesService {
 
         let dateIssued = this.ExcelDateToJSDate(element.Issued_Date)
         let dateReceived = this.ExcelDateToJSDate(element.Received_Date)
-        let issueDate = dayjs(dateIssued).format('DD/MM/YYYY') 
-        let recievedDate = dayjs(dateReceived).format('DD/MM/YYYY')
+        let issueDate = dayjs(dateIssued).format('MM/DD/YYYY') 
+        let recievedDate = dayjs(dateReceived).format('MM/DD/YYYY')
         let file = {
           fileNo: element[`File_No.`],
           fileSecurityNo: element.Security_Code,
@@ -374,7 +374,7 @@ export class PlotFilesService {
           lastfileReciever: reciever
 
         }
-        
+
         let newFile = PlotFiles.create(file);
         await newFile.save()
       });
