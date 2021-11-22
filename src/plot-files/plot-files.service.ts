@@ -266,9 +266,9 @@ export class PlotFilesService {
       })
 
       let files = []
-      console.log(ids)
       for (let i=0; i<ids.length; i++){
-        let file = await this.plotFilesRepo.findOne(ids[i].id)
+        console.log(ids[i])
+        let file = await this.plotFilesRepo.findOne(ids[i])
 
             file.projectName= assignmentInfo.projectName || file.projectName,
             file.assignedDate= assignmentInfo.assignedDate || file.assignedDate,
@@ -285,7 +285,7 @@ export class PlotFilesService {
             file.discountPercentage= assignmentInfo.discountPercentage || file.discountPercentage,
             file.depositPercentage= assignmentInfo.depositPercentage || file.depositPercentage,
 
-            await file.save()
+          await file.save()
 
         await this.createFileRecord(file, 'ASSIGNMENT_CHANGE')
         files.push(file)
@@ -355,8 +355,8 @@ export class PlotFilesService {
 
         let dateIssued = this.ExcelDateToJSDate(element.Issued_Date)
         let dateReceived = this.ExcelDateToJSDate(element.Received_Date)
-        let issueDate = dayjs(dateIssued).format('MM/DD/YYYY') 
-        let recievedDate = dayjs(dateReceived).format('MM/DD/YYYY')
+        let issueDate = dayjs(dateIssued).format('YYYY-MM-DD') 
+        let recievedDate = dayjs(dateReceived).format('YYYY-MM-DD')
         let file = {
           fileNo: element[`File_No.`],
           fileSecurityNo: element.Security_Code,
