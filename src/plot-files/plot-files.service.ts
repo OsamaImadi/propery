@@ -19,6 +19,7 @@ import { Dealer } from './../dealer/dealer.entity';
 import { User } from './../user/user.entity';
 import { Records } from 'src/records/records.entity';
 var XLSX = require('xlsx');
+var dayjs = require('dayjs')
 
 @Injectable()
 export class PlotFilesService {
@@ -354,7 +355,8 @@ export class PlotFilesService {
 
         let dateIssued = this.ExcelDateToJSDate(element.Issued_Date)
         let dateReceived = this.ExcelDateToJSDate(element.Received_Date)
-  
+        let issueDate = dayjs(dateIssued).format('DD/MM/YYYY') 
+        let recievedDate = dayjs(dateReceived).format('DD/MM/YYYY')
         let file = {
           fileNo: element[`File_No.`],
           fileSecurityNo: element.Security_Code,
@@ -362,9 +364,9 @@ export class PlotFilesService {
           projectName: element.Project_Name,
           status: element.Status,
           assignedTo: userIssued.id,
-          assignedDate: `${dateIssued}`,
+          assignedDate: `${issueDate}`,
           recievedBy: userRecieved.id,
-          recievedDate: `${dateReceived}`,
+          recievedDate: `${recievedDate}`,
           companyName: element.Company,
           unitPrice: element.Unit_Price,
           minimumRequiredDeposit: element.Minimum_Deposit,
@@ -372,7 +374,7 @@ export class PlotFilesService {
           lastfileReciever: reciever
 
         }
-  
+        
         let newFile = PlotFiles.create(file);
         await newFile.save()
       });
