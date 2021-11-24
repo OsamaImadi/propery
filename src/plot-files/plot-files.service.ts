@@ -99,7 +99,10 @@ export class PlotFilesService {
         throw new NotFoundException('creator not found')
       }
 
-      let file = await this.plotFilesRepo.findOne({where: {fileNo: notes.fileNo}})
+      let file = await this.plotFilesRepo.findOne({where: [
+        {fileNo: notes.fileNo},
+        {id: notes.fileNo}
+    ]})
       if(!file){
         throw new NotFoundException('file not found')
       }
@@ -370,11 +373,12 @@ export class PlotFilesService {
           companyName: element.Company,
           unitPrice: element.Unit_Price,
           minimumRequiredDeposit: element.Minimum_Deposit,
+          depositPercentage: element[`Minimum_Deposit_%`],
           lastfileAssigner: issuer,
           lastfileReciever: reciever
 
         }
-
+        
         let newFile = PlotFiles.create(file);
         await newFile.save()
       });

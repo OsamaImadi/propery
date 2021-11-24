@@ -9,69 +9,73 @@ import {
 import { PaginateableBaseEntity } from '@tfarras/nestjs-typeorm-pagination';
 
 @Entity()
-export class Patient extends PaginateableBaseEntity {
+export class Deal extends PaginateableBaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ 
-      unique: true,
+    @Column({
       nullable: false
     })
-    dealerCode:string;
+    fileNo:string;
 
-    @Column({ 
-      unique: true,
+    @Column({
       nullable: false
     })
-    phoneNo:string;
+    fileSecurityNo:string;
+
+    @Column({
+      nullable: true
+    })
+    orderInitiationDate:string;
+
+    @Column({
+      nullable: true
+    })
+    orderCompletionDate:string;
+
+    @Column({
+      nullable: true
+    })
+    orderCreatedBy:string;
+
+    @Column({
+      nullable: true
+    })
+    assignedTo:string;
+
+    @Column({
+      nullable: true
+    })
+    recievedBy:string;
+
+    @Column({
+      nullable: true
+    })
+    project:string;
 
     @Column({ 
-      unique: true,
       nullable: false
     })
-    CNIC:string;
-
-    @Column({ 
-      unique: true,
-      nullable: false
-    })
-    securityCode:string;
-
-    @Column({ 
-      nullable: false
-    })
-    dealerType:string;
-
-    @Column({ 
+    orderStatus:string;
+        
+    @Column(
+      "decimal",{
       nullable: true
     })
-    subDealerId:string;
-
-    @Column({ 
+    totalPayable:number;
+        
+    @Column(
+      "decimal",{
       nullable: true
     })
-    companyNumber:string;
-
-    @Column({ 
+    minDiscount:number;
+        
+    @Column(
+      "decimal",{
       nullable: true
     })
-    dealNumber:string;
-
-    @Column({ 
-      nullable: true
-    })
-    totalPayableAmount:number;
-
-    @Column({ 
-      nullable: true
-    })
-    totalRecievedAmount:number;
-
-    @Column({ 
-      nullable: true
-    })
-    totalRemainingAmount:number;
+    minDiscountPercentage:number;
 
     @CreateDateColumn({ type: 'timestamp' })
     createdAt!: Date;
