@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFile, UseGuards, UseInterceptors, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFile, UseGuards, UseInterceptors, ValidationPipe } from '@nestjs/common';
 import { PlotFilesService } from './plot-files.service';
 import { PlotFilesDto } from './dto/plotFiles.dto';
 import { UpdatePlotFilesDto } from './dto/updatePlotFiles.dto';
@@ -34,6 +34,12 @@ export class PlotFilesController {
     pg._sortBy = pg._sortBy || 'id';
     pg._order = pg._order || 'DESC';
     return PlotFiles.findAndPaginate(pg);
+  }
+ 
+  @Get('notes')
+  getNotesbyFileId(@Query() query
+  ) {
+    return this.service.getNotesByFileNo(query);
   }
  
   @Get('notes/:id')

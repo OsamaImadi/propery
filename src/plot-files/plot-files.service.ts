@@ -87,8 +87,12 @@ export class PlotFilesService {
     return file;
   }
 
-  async getNotesByFile(id: number) {
+  async getNotesByFile(id: number | string) {
     return await this.fileNotesRepo.find({where:{fileNo: id}});
+  }
+
+  async getNotesByFileNo(query) {
+    return await this.fileNotesRepo.find({where:{fileNo: query?.fileNo }});
   }
   
   async createNote(notes: NotesDto){
