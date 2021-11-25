@@ -98,10 +98,9 @@ export class PlotFilesService {
       if(!assignee){
         throw new NotFoundException('creator not found')
       }
-
+      
       let file = await this.plotFilesRepo.findOne({where: [
-        {fileNo: notes.fileNo},
-        {id: notes.fileNo}
+        {fileNo: notes.fileNo}
     ]})
       if(!file){
         throw new NotFoundException('file not found')
