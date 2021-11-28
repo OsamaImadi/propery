@@ -6,6 +6,7 @@ import { PlotFiles } from './plot-files.entity';
 import { PgParams, PaginationParams, Pagination } from '@tfarras/nestjs-typeorm-pagination';
 import { NotesDto } from './dto/note.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { NotesBulkDto } from './dto/notes.bulk.dto';
 
 @Controller('plot-files')
 export class PlotFilesController {
@@ -36,6 +37,12 @@ export class PlotFilesController {
     return PlotFiles.findAndPaginate(pg);
   }
  
+  @Get('notes/parsed')
+  getNotesbyFileIdParsed(@Query() query
+  ) {
+    return this.service.getNotesByFileNoParsed(query);
+  }
+ 
   @Get('notes')
   getNotesbyFileId(@Query() query
   ) {
@@ -61,6 +68,12 @@ export class PlotFilesController {
     return this.service.createNote(note);
   }
 
+  @Post('/notes/bulk')
+  createNotesBulk(
+    @Body(ValidationPipe) note: NotesBulkDto
+  ) {
+    return this.service.createNotesByArray(note);
+  }
   
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))

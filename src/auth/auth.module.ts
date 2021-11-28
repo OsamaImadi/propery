@@ -6,11 +6,12 @@ import { Admin } from 'src/admin/admin.entity';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
+import { Dealer } from 'src/dealer/dealer.entity';
 
 const jwtSecret = "PropertyExpert";
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Admin]),
+  TypeOrmModule.forFeature([Admin, Dealer]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: jwtSecret

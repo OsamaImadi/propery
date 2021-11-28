@@ -29,4 +29,12 @@ export class AuthController {
   ): Promise<{ token: string; data: any }> {
     return this.service.signInAdmin(authCredentialsDto);
   }
+ 
+  @Post('/dealer/login')
+  @HttpCode(200)
+  signInDealer(
+    @Body(ValidationPipe) authCredentialsDto: AuthUsersDto,
+  ): Promise<{ token: string; data: any }> {
+    return this.service.signInDealer(authCredentialsDto);
+  }
 }

@@ -18,6 +18,7 @@ import { PaginationParams } from '@tfarras/nestjs-typeorm-pagination';
 import { Dealer } from './../dealer/dealer.entity';
 import { User } from './../user/user.entity';
 import { Records } from 'src/records/records.entity';
+import { NotesBulkDto } from './dto/notes.bulk.dto';
 var XLSX = require('xlsx');
 var dayjs = require('dayjs')
 
@@ -94,6 +95,15 @@ export class PlotFilesService {
   async getNotesByFileNo(query) {
     return await this.fileNotesRepo.find({where:{fileNo: query?.fileNo }});
   }
+
+  async getNotesByFileNoParsed(query) {
+    let notes = await this.fileNotesRepo.find({where:{fileNo: query?.fileNo }});
+    let response:any = [{fileId: query?.fileNo}];
+    notes.forEach((note)=>{
+      response.push(note.note)
+    })
+    return response
+  }
   
   async createNote(notes: NotesDto){
     try{
@@ -131,7 +141,43 @@ export class PlotFilesService {
       }
       throw new InternalServerErrorException(err.message)
     }
+  }
+  
+  async createNotesByArray(notes: NotesBulkDto){
+    try{
 
+      let assignee = await this.adminRepo.findOne(notes.createdBy)
+      if(!assignee){
+        throw new NotFoundException('creator not found')
+      }
+      notes.ids.forEach(async(id)=>{
+        let file = await this.plotFilesRepo.findOne({where: [
+          {fileNo: id}
+        ]})
+        if(!file){
+          throw new NotFoundException('file not found')
+        }
+        const note = new FileNotes();
+  
+        note.fileNo = id;
+        note.createdBy = ""+assignee.id;
+        note.note = notes.note;
+        
+        return await this.fileNotesRepo.save(note);
+      })
+      return 'Notes added';
+    }catch(err){
+      if(err.errno==1062){
+        throw new ConflictException('Note already exists')
+      }
+      if(err.errno==1364){
+        throw new BadRequestException(err.message)
+      }
+      if(err.code==23505){
+        throw new ConflictException(err.message)
+      }
+      throw new InternalServerErrorException(err.message)
+    }
   }
 
   async createFile(file: PlotFilesDto){

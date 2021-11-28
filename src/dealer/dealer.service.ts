@@ -34,6 +34,7 @@ export class DealerService {
   async createDealer(dealer: DealerDto){
     try{
       let newdealer = Dealer.create(dealer);
+      
       await newdealer.save()
       
       return newdealer;

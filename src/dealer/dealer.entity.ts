@@ -5,8 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   BaseEntity,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 import { PaginateableBaseEntity } from '@tfarras/nestjs-typeorm-pagination';
+import { hashIt } from 'src/admin/admin.entity';
 
 @Entity()
 export class Dealer extends PaginateableBaseEntity {
@@ -51,6 +54,16 @@ export class Dealer extends PaginateableBaseEntity {
     @Column({ 
       nullable: true
     })
+    email:string;
+
+    @Column({ 
+      nullable: true
+    })
+    password:string;
+
+    @Column({ 
+      nullable: true
+    })
     name:string;
 
     @Column({ 
@@ -88,4 +101,12 @@ export class Dealer extends PaginateableBaseEntity {
   
     @UpdateDateColumn({ type: 'timestamp', select: false })
     updatedAt!: Date;
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    async hashPassword() {
+      if (this.password) {
+        this.password = await hashIt(this.password)
+      }
+    }
 }

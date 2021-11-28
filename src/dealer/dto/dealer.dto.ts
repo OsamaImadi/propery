@@ -3,9 +3,22 @@ import {
   IsOptional,
   IsNumber,
   IsNotEmpty,
+  IsEmail,
+  MaxLength,
+  MinLength,
 } from 'class-validator';
 
 export class DealerDto {
+
+  @IsEmail()
+  @IsOptional()
+  email: string;
+
+  @IsString()
+  @IsOptional()
+  @MinLength(4)
+  @MaxLength(20)
+  password: string;
 
   @IsString()
   @IsNotEmpty()

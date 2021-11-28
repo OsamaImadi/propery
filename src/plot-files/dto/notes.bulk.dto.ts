@@ -5,11 +5,7 @@ import {
   IsOptional,
 } from 'class-validator';
 
-export class NotesDto {
-
-  @IsString()
-  @IsNotEmpty()
-  fileNo: string;
+export class NotesBulkDto {
 
   @IsString()
   @IsNotEmpty()
@@ -18,4 +14,8 @@ export class NotesDto {
   @IsString()
   @IsNotEmpty()
   createdBy: string;
+
+  @IsArray()
+  @IsNotEmpty()
+  ids: [];
 }

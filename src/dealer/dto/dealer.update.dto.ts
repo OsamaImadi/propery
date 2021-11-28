@@ -2,10 +2,22 @@ import {
   IsString,
   IsOptional,
   IsNumber,
+  IsEmail,
+  MaxLength,
+  MinLength,
 } from 'class-validator';
 
 export class DealerUpdateDto {
 
+  @IsEmail()
+  @IsOptional()
+  email: string;
+
+  @IsString()
+  @IsOptional()
+  @MinLength(4)
+  @MaxLength(20)
+  password: string;
 
   @IsString()
   @IsOptional()
