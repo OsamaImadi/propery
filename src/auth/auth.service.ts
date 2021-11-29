@@ -54,7 +54,7 @@ export class AuthService {
   ): Promise<{ token: string; data: any }> {
 
     const user = await this.dealerRepo.findOne({
-      select: ["email", "password", "id"],
+      select: ["email", "password", "id", "dealerType"],
       where: [{
         email: authUserCredentialsDto?.email?.toLocaleLowerCase()
       }]
@@ -62,6 +62,10 @@ export class AuthService {
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    if(user.dealerType == 'gold'){
+      throw new UnauthorizedException('You have to be a platinium member to sign in.');
     }
 
     if (!(await bcrypt.compare(authUserCredentialsDto.password, user.password))) {

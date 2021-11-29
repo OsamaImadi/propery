@@ -42,7 +42,8 @@ export class Dealer extends PaginateableBaseEntity {
     securityCode:string;
 
     @Column({ 
-      nullable: false
+      nullable: false,
+      default: 'gold'
     })
     dealerType:string;
 
@@ -95,6 +96,11 @@ export class Dealer extends PaginateableBaseEntity {
       nullable: true
     })
     dealId:number;
+
+    @Column({ 
+      nullable: true
+    })
+    parent:string;
 
     @CreateDateColumn({ type: 'timestamp' })
     createdAt!: Date;
