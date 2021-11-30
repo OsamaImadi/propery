@@ -30,7 +30,7 @@ export class PlotFilesController {
   getPaginated(
     @PgParams() pg: PaginationParams,
   ): Promise<Pagination<PlotFiles>> {
-    pg._limit = pg._limit || 10;
+    pg._limit = pg._limit || 25;
     pg._start = pg._start || 0;
     pg._sortBy = pg._sortBy || 'id';
     pg._order = pg._order || 'DESC';
@@ -86,6 +86,10 @@ export class PlotFilesController {
     @Body(ValidationPipe) file: UpdatePlotFilesDto,
     @PgParams() pg: PaginationParams
     ) {
+      pg._limit = pg._limit || 25;
+      pg._start = pg._start || 0;
+      pg._sortBy = pg._sortBy || 'id';
+      pg._order = pg._order || 'DESC';
     return await this.service.bulkAssignFiles(pg,file)
   }
 

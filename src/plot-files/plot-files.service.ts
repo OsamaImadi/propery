@@ -185,10 +185,10 @@ export class PlotFilesService {
       let issuer:`user` | 'admin' | 'dealer' = 'admin', recieving:`user` | 'admin' | 'dealer' = 'admin'
       let assignee:any = await this.adminRepo.findOne(file.assignedTo)
       if(!assignee){
-        assignee = await this.dealerRepo.findOne(file.recievedBy)
+        assignee = await this.dealerRepo.findOne(file.assignedTo)
         issuer='dealer'
         if(!assignee){
-          assignee = await this.userRepo.findOne(file.recievedBy)
+          assignee = await this.userRepo.findOne(file.assignedTo)
           issuer = 'user'
         }
         if(!assignee){
@@ -254,10 +254,10 @@ export class PlotFilesService {
           let assignee:any = await this.adminRepo.findOne(file.assignedTo)
           issuer='admin'
           if(!assignee){
-            assignee = await this.dealerRepo.findOne(file.recievedBy)
+            assignee = await this.dealerRepo.findOne(file.assignedTo)
             issuer='dealer'
             if(!assignee){
-              assignee = await this.userRepo.findOne(file.recievedBy)
+              assignee = await this.userRepo.findOne(file.assignedTo)
               issuer = 'user'
             }
             if(!assignee){
