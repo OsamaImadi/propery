@@ -24,8 +24,8 @@ export class Admin extends PaginateableBaseEntity {
     id: number;
 
     @Column({ 
-      unique: true,
-      nullable: false
+      // unique: true,
+      nullable: true
     })
     email:string;
 
@@ -34,15 +34,13 @@ export class Admin extends PaginateableBaseEntity {
     })
     name:string;
 
-    @Column({ 
-      unique: true,
+    @Column({
       nullable: false,
       select: false
     })
     password:string;
 
-    @Column({ 
-      unique: true,
+    @Column({
       nullable: false
     })
     dealerCode:string;
@@ -59,8 +57,7 @@ export class Admin extends PaginateableBaseEntity {
     })
     CNIC:string;
 
-    @Column({ 
-      unique: true,
+    @Column({
       nullable: false
     })
     securityCode:string;

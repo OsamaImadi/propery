@@ -21,7 +21,7 @@ export class AuthService {
     authUserCredentialsDto: AuthUsersDto,
   ): Promise<{ token: string; data: any }> {
 
-    const user = await this.adminRepo.findOne({
+    let user = await this.adminRepo.findOne({
       select: ["email", "password", "id", "isAdmin"],
       where: [{
         email: authUserCredentialsDto?.email?.toLocaleLowerCase()
@@ -29,7 +29,13 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      user = await this.adminRepo.findOne({
+        select: ["email", "password", "id", "isAdmin"],
+        where: [{
+          phoneNo: authUserCredentialsDto?.email
+        }]
+      });
+      if(!user) throw new UnauthorizedException('Invalid credentials');
     }
 
     if (!(await bcrypt.compare(authUserCredentialsDto.password, user.password))) {
@@ -53,7 +59,7 @@ export class AuthService {
     authUserCredentialsDto: AuthUsersDto,
   ): Promise<{ token: string; data: any }> {
 
-    const user = await this.dealerRepo.findOne({
+    let user = await this.dealerRepo.findOne({
       select: ["email", "password", "id", "dealerType"],
       where: [{
         email: authUserCredentialsDto?.email?.toLocaleLowerCase()
@@ -61,7 +67,13 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      user = await this.dealerRepo.findOne({
+        select: ["email", "password", "id", "dealerType"],
+        where: [{
+          phoneNo: authUserCredentialsDto?.email
+        }]
+      });
+      if(!user) throw new UnauthorizedException('Invalid credentials');
     }
 
     if(user.dealerType == 'gold'){

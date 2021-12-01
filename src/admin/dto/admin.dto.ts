@@ -12,13 +12,13 @@ import {
 export class AdminDto {
 
   @IsEmail()
-  @IsNotEmpty()
+  @IsOptional()
   email: string;
 
   @IsString()
   @IsNotEmpty()
   @MinLength(4)
-  @MaxLength(20)
+  @MaxLength(30)
   password: string;
 
   @IsString()
@@ -34,11 +34,11 @@ export class AdminDto {
   CNIC: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   securityCode: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   dealerType: string;
 
   @IsString()

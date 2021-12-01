@@ -7,6 +7,7 @@ import {
   BaseEntity,
   BeforeInsert,
   BeforeUpdate,
+  Generated,
 } from 'typeorm';
 import { PaginateableBaseEntity } from '@tfarras/nestjs-typeorm-pagination';
 import { hashIt } from 'src/admin/admin.entity';
@@ -14,8 +15,12 @@ import { hashIt } from 'src/admin/admin.entity';
 @Entity()
 export class Dealer extends PaginateableBaseEntity {
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn("uuid")
     id: number;
+
+    @Column()
+    @Generated('increment')
+    srNo: number;
 
     @Column({ 
       unique: true,
@@ -58,7 +63,8 @@ export class Dealer extends PaginateableBaseEntity {
     email:string;
 
     @Column({ 
-      nullable: true
+      nullable: true,
+      select:false
     })
     password:string;
 

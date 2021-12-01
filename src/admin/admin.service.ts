@@ -38,6 +38,7 @@ export class AdminService {
       
       return newAdmin;
     }catch(err){
+      console.log(err)
       if(err.errno==1062){
         throw new ConflictException('Admin already exists')
       }
@@ -92,5 +93,9 @@ export class AdminService {
     }catch(err){
       throw err
     }
+  }
+  
+  async truncate(): Promise<void> {
+    return await this.adminRepo.clear();
   }
 }

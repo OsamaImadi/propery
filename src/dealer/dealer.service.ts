@@ -94,4 +94,8 @@ export class DealerService {
       throw err
     }
   }
+
+  async truncate(): Promise<void> {
+    return await this.dealerRepo.clear();
+  }
 }

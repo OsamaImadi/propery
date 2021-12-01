@@ -54,7 +54,12 @@ export class AdminController {
   ) {
     return this.service.updateAdmin(admin, params.id);
   }
-
+  
+  @Delete('clear')
+  turncate() {
+    return this.service.truncate();
+  }
+  
   @Delete('/:id')
   delete(
     @Param() params

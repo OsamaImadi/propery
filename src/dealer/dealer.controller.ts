@@ -53,6 +53,11 @@ export class DealerController {
   ) {
     return this.service.updateDealer(dealer, params.id);
   }
+  
+  @Delete('clear')
+  turncate() {
+    return this.service.truncate();
+  }
 
   @Delete('/:id')
   delete(
