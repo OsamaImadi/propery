@@ -14,6 +14,7 @@ import { Dealer } from './dealer/dealer.entity';
 import { Admin } from './admin/admin.entity';
 import { User } from './user/user.entity';
 import { RecordsModule } from './records/records.module';
+import { RolesModule } from './roles/roles.module';
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ dotenv.config();
     ),
     TypeOrmModule.forFeature([PlotFiles, Dealer, Admin, User]),
     RecordsModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

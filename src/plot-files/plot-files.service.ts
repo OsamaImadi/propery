@@ -284,6 +284,10 @@ export class PlotFilesService {
       if(!fileExisiting){
         throw new NotFoundException('No record found')
       }
+      let statusChange : "ASSIGNMENT_CHANGE" | "PRICE_CHANGE" = "PRICE_CHANGE";
+      if(file.assignedTo != fileExisiting.assignedTo){
+        statusChange = "ASSIGNMENT_CHANGE"
+      }
       await this.plotFilesRepo.update(
         id,
         {...file, lastfileAssigner: issuer, lastfileReciever: recieving}
@@ -291,7 +295,7 @@ export class PlotFilesService {
 
       let updatedFile = await this.plotFilesRepo.findOne(id)
 
-      await this.createFileRecord(updatedFile, 'ASSIGNMENT_CHANGE')
+      await this.createFileRecord(updatedFile, statusChange)
 
       return await this.plotFilesRepo.findOne(id);   
 
