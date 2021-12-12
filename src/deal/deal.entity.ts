@@ -54,6 +54,11 @@ export class Deal extends PaginateableBaseEntity {
     })
     project:string;
 
+    @Column({
+      nullable: true
+    })
+    invoiceId:string;
+
     @Column({ 
       nullable: false
     })

@@ -2,6 +2,7 @@ import {
   IsString,
   IsNumber,
   IsNotEmpty,
+  IsOptional
 } from 'class-validator';
 
 export class DealsDto {
@@ -9,6 +10,10 @@ export class DealsDto {
   @IsString()
   @IsNotEmpty()
   fileNo: string;
+
+  @IsString()
+  @IsOptional()
+  invoiceId: string;
 
   @IsString()
   @IsNotEmpty()
