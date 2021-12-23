@@ -4,7 +4,6 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  BaseEntity,
 } from 'typeorm';
 import { PaginateableBaseEntity } from '@tfarras/nestjs-typeorm-pagination';
 

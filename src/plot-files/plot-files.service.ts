@@ -31,7 +31,6 @@ export class PlotFilesService {
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(FileNotes) private fileNotesRepo: Repository<FileNotes>,
   ) { }
-  private recordsService: RecordsService
   async getAll() {
     let record = await this.plotFilesRepo.find()
     return record
@@ -150,15 +149,16 @@ export class PlotFilesService {
       if(!assignee){
         throw new NotFoundException('creator not found')
       }
-      notes.ids.forEach(async(id)=>{
+      for (let k=0; k<notes.ids.length; k++){
         let file = await this.plotFilesRepo.findOne({where: [
-          {fileNo: id}
+          {fileNo: notes.ids[k]}
         ]})
         if(!file){
           throw new NotFoundException('file not found')
         }
+      }
+      notes.ids.forEach(async(id)=>{
         const note = new FileNotes();
-  
         note.fileNo = id;
         note.createdBy = ""+assignee.id;
         note.note = notes.note;
@@ -183,7 +183,11 @@ export class PlotFilesService {
   async createFile(file: PlotFilesDto){
     try{
       let issuer:`user` | 'admin' | 'dealer' = 'admin', recieving:`user` | 'admin' | 'dealer' = 'admin'
-      let assignee:any = await this.adminRepo.findOne(file.assignedTo)
+      let assignee:any
+      if(+file.assignedTo){
+        assignee = await this.adminRepo.findOne(file.assignedTo)
+        issuer='admin'
+      }
       if(!assignee){
         assignee = await this.dealerRepo.findOne(file.assignedTo)
         issuer='dealer'
@@ -196,7 +200,11 @@ export class PlotFilesService {
       }
     }
 
-      let reciever:any = await this.adminRepo.findOne(file.recievedBy)
+      let reciever:any
+      if(+file.recievedBy){
+        reciever = await this.adminRepo.findOne(file.recievedBy)
+        recieving='admin'
+      }
       if(!reciever){
         reciever = await this.dealerRepo.findOne(file.recievedBy)
         recieving = 'dealer'
@@ -248,11 +256,17 @@ export class PlotFilesService {
 
   async updateFile(file: UpdatePlotFilesDto, id:number){
     try{
+      let fileExisiting = await this.plotFilesRepo.findOne(id)
+      if(!fileExisiting){
+        throw new NotFoundException('No file found')
+      }
       let issuer: string, recieving: string;
       if(file.assignedTo){
-          
-          let assignee:any = await this.adminRepo.findOne(file.assignedTo)
-          issuer='admin'
+        let assignee:any
+          if(+file.assignedTo){
+            assignee = await this.adminRepo.findOne(file.assignedTo)
+            issuer='admin'
+          }
           if(!assignee){
             assignee = await this.dealerRepo.findOne(file.assignedTo)
             issuer='dealer'
@@ -266,8 +280,11 @@ export class PlotFilesService {
         }
       }
       if(file.recievedBy){
-        let reciever:any = await this.adminRepo.findOne(file.recievedBy)
-        recieving = 'admin'
+        let reciever:any
+        if(+file.recievedBy){
+          reciever = await this.adminRepo.findOne(file.recievedBy)
+          recieving='admin'
+        }
         if(!reciever){
           reciever = await this.dealerRepo.findOne(file.recievedBy)
           recieving = 'dealer'
@@ -280,13 +297,11 @@ export class PlotFilesService {
           }
         }
       }
-      let fileExisiting = await this.plotFilesRepo.findOne(id)
-      if(!fileExisiting){
-        throw new NotFoundException('No record found')
-      }
       let statusChange : "ASSIGNMENT_CHANGE" | "PRICE_CHANGE" = "PRICE_CHANGE";
       if(file.assignedTo != fileExisiting.assignedTo){
         statusChange = "ASSIGNMENT_CHANGE"
+      }else if(file.assignedTo == fileExisiting.assignedTo){
+        statusChange = "PRICE_CHANGE"
       }
       await this.plotFilesRepo.update(
         id,
@@ -300,6 +315,7 @@ export class PlotFilesService {
       return await this.plotFilesRepo.findOne(id);   
 
     }catch(err){
+      console.log(err)
       if(err.errno==1062){
         throw new ConflictException('Admin already exists')
       }

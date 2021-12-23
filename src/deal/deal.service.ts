@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Deal } from './deal.entity';
 import { DealsDto } from './dto/deal.dto';
 import { PlotFiles } from './../plot-files/plot-files.entity';
+import * as moment from 'moment'
 
 @Injectable()
 export class DealService {
@@ -28,9 +29,12 @@ export class DealService {
       let file = await this.plotFilesRepo.findOne({where:{fileNo: deal.fileNo}})
       if(!file) throw new NotFoundException('File not found')
       let newdeal = Deal.create(deal);
-      await newdeal.save()
-      
-      return newdeal;
+      let dealNew = await newdeal.save()
+
+      let date = moment(dealNew.createdAt).format('MMDDYYYY');
+      dealNew.invoiceId = `${date}-${dealNew.id}`
+
+      return await dealNew.save();
     }catch(err){
       if(err.errno==1062){
         throw new ConflictException('Deal already exists')
