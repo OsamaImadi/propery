@@ -46,6 +46,10 @@ export class UpdatePlotFilesDto {
   @IsOptional()
   companyName: string;
 
+  @IsString()
+  @IsOptional()
+  plotType: 'residential' | 'commercial';
+  
   @IsNumber()
   @IsOptional()
   unitPrice: number;

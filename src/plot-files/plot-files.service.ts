@@ -19,6 +19,7 @@ import { Dealer } from './../dealer/dealer.entity';
 import { User } from './../user/user.entity';
 import { Records } from 'src/records/records.entity';
 import { NotesBulkDto } from './dto/notes.bulk.dto';
+import { Society } from './../society/entity/society.entity';
 var XLSX = require('xlsx');
 var dayjs = require('dayjs')
 
@@ -30,6 +31,7 @@ export class PlotFilesService {
     @InjectRepository(Dealer) private dealerRepo: Repository<Dealer>,
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(FileNotes) private fileNotesRepo: Repository<FileNotes>,
+    @InjectRepository(Society) private societyRepo: Repository<Society>,
   ) { }
   async getAll() {
     let record = await this.plotFilesRepo.find()
@@ -217,6 +219,9 @@ export class PlotFilesService {
         }
       }
 
+      let society = await this.societyRepo.findOne({where:{societyName: file.projectName}})
+      if(!society) throw new NotFoundException(`No society with the name ${file.projectName} exists`)
+
       const plot = new PlotFiles();
 
       plot.projectName = file.projectName;
@@ -233,6 +238,7 @@ export class PlotFilesService {
       plot.minimumRequiredDeposit = file.minimumRequiredDeposit;
       plot.discountPercentage = file.discountPercentage;
       plot.depositPercentage = file.depositPercentage;
+      plot.plotType = file.plotType;
       plot.lastfileAssigner = issuer;
       plot.lastfileReciever = recieving
       
@@ -249,6 +255,7 @@ export class PlotFilesService {
       if(err.code==23505){
         throw new ConflictException(err.message)
       }
+      // if(err.code ==)
       throw new InternalServerErrorException(err.message)
     }
 
@@ -297,6 +304,12 @@ export class PlotFilesService {
           }
         }
       }
+
+      if(file.projectName){
+        let society = await this.societyRepo.findOne({where:{societyName: file.projectName}})
+        if(!society) throw new NotFoundException(`No society with the name ${file.projectName} exists`)
+      }
+
       let statusChange : "ASSIGNMENT_CHANGE" | "PRICE_CHANGE" = "PRICE_CHANGE";
       if(file.assignedTo != fileExisiting.assignedTo){
         statusChange = "ASSIGNMENT_CHANGE"
@@ -341,6 +354,9 @@ export class PlotFilesService {
       for (let i=0; i<ids.length; i++){
         console.log(ids[i])
         let file = await this.plotFilesRepo.findOne(ids[i])
+        
+            let society = await this.societyRepo.findOne({where:{societyName: file.projectName}})
+            if(!society) throw new NotFoundException(`No society with the name ${file.projectName} exists`)
 
             file.projectName= assignmentInfo.projectName || file.projectName,
             file.assignedDate= assignmentInfo.assignedDate || file.assignedDate,
@@ -397,7 +413,7 @@ export class PlotFilesService {
         });
       });
   
-      df.forEach(async (element: { [x: string]: any; Issued_To: any; Received_By: any; Security_Code: any; File_Type: any; Project_Name: any; Status: any; Issued_Date: any; Received_Date: any; Company: any; Unit_Price: any; Minimum_Deposit: any; }) => {
+      df.forEach(async (element: { [x: string]: any; Issued_To: any; Received_By: any; Security_Code: any; File_Type: any; Project_Name: any; Status: any; Issued_Date: any; Received_Date: any; Company: any; Unit_Price: any; Minimum_Deposit: any; plotType:any }) => {
         let userIssued:any;
         let userRecieved:any;
         let issuer:`user` | 'admin' | 'dealer' = 'admin', reciever:`user` | 'admin' | 'dealer' = 'admin'
@@ -442,6 +458,7 @@ export class PlotFilesService {
           companyName: element.Company,
           unitPrice: element.Unit_Price,
           minimumRequiredDeposit: element.Minimum_Deposit,
+          plotType: element.plotType,
           depositPercentage: element[`Minimum_Deposit_%`],
           lastfileAssigner: issuer,
           lastfileReciever: reciever

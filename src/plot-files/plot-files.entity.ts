@@ -67,6 +67,11 @@ export class PlotFiles extends PaginateableBaseEntity {
     })
     companyName:string;
     
+    @Column({
+      nullable: true
+    })
+    plotType: 'residential' | 'commercial';
+    
     @Column(
       "decimal",{
       nullable: true
