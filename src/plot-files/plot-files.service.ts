@@ -20,6 +20,7 @@ import { User } from './../user/user.entity';
 import { Records } from 'src/records/records.entity';
 import { NotesBulkDto } from './dto/notes.bulk.dto';
 import { Society } from './../society/entity/society.entity';
+import { Transaction } from './../transactions/entity/transactions.entity';
 var XLSX = require('xlsx');
 var dayjs = require('dayjs')
 
@@ -243,6 +244,7 @@ export class PlotFilesService {
       plot.lastfileReciever = recieving
       
       let newFile = await this.plotFilesRepo.save(plot);
+
       
       return newFile;
     }catch(err){
@@ -315,6 +317,17 @@ export class PlotFilesService {
         statusChange = "ASSIGNMENT_CHANGE"
       }else if(file.assignedTo == fileExisiting.assignedTo){
         statusChange = "PRICE_CHANGE"
+                      
+        const transaction = new Transaction();
+        transaction.fileNo = file.fileNo;
+        transaction.userId = file.assignedTo;
+        transaction.societyName = file.projectName;
+        transaction.productType = file.plotType;
+        transaction.plotArea = file.fileType;
+        transaction.totalPricePayable = file.unitPrice;
+        transaction.status = 'in_progress'
+
+        await transaction.save()
       }
       await this.plotFilesRepo.update(
         id,
@@ -374,6 +387,19 @@ export class PlotFilesService {
             file.depositPercentage= assignmentInfo.depositPercentage || file.depositPercentage,
 
           await file.save()
+          
+          if(file.unitPrice == assignmentInfo.unitPrice){
+            const transaction = new Transaction();
+            transaction.fileNo = file.fileNo;
+            transaction.userId = file.assignedTo;
+            transaction.societyName = file.projectName;
+            transaction.productType = file.plotType;
+            transaction.plotArea = file.fileType;
+            transaction.totalPricePayable = file.unitPrice;
+            transaction.status = 'in_progress'
+    
+            await transaction.save()
+          }
 
         await this.createFileRecord(file, 'ASSIGNMENT_CHANGE')
         files.push(file)

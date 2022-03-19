@@ -16,6 +16,7 @@ import { User } from './user/user.entity';
 import { RecordsModule } from './records/records.module';
 import { RolesModule } from './roles/roles.module';
 import { SocietyModule } from './society/society.module';
+import { TransactionsModule } from './transactions/transactions.module';
 
 dotenv.config();
 
@@ -46,6 +47,7 @@ dotenv.config();
     RecordsModule,
     RolesModule,
     SocietyModule,
+    TransactionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

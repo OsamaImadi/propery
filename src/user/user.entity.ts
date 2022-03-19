@@ -68,6 +68,12 @@ export class User extends PaginateableBaseEntity  {
     totalRemainingAmount:number;
 
     @Column({ 
+      nullable: true,
+      default: 0
+    })
+    balance:number;
+
+    @Column({ 
       nullable: true
     })
     paymentPlan:string;
