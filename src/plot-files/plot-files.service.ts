@@ -311,23 +311,25 @@ export class PlotFilesService {
         let society = await this.societyRepo.findOne({where:{societyName: file.projectName}})
         if(!society) throw new NotFoundException(`No society with the name ${file.projectName} exists`)
       }
+                      
+      // const transaction = new Transaction();
+      // transaction.fileNo = file.fileNo;
+      // transaction.sellerId = file.assignedTo;
+      // transaction.buyerId = file.recievedBy;
+      // transaction.societyName = file.projectName;
+      // transaction.productType = file.plotType;
+      // transaction.plotArea = file.fileType;
+      // transaction.totalPricePayable = file.unitPrice;
+      // transaction.remainingBalancePayable = file.remainingBalancePayable;
+      // transaction.status = 'in_progress'
+
+      // await transaction.save()
 
       let statusChange : "ASSIGNMENT_CHANGE" | "PRICE_CHANGE" = "PRICE_CHANGE";
       if(file.assignedTo != fileExisiting.assignedTo){
         statusChange = "ASSIGNMENT_CHANGE"
       }else if(file.assignedTo == fileExisiting.assignedTo){
         statusChange = "PRICE_CHANGE"
-                      
-        const transaction = new Transaction();
-        transaction.fileNo = file.fileNo;
-        transaction.userId = file.assignedTo;
-        transaction.societyName = file.projectName;
-        transaction.productType = file.plotType;
-        transaction.plotArea = file.fileType;
-        transaction.totalPricePayable = file.unitPrice;
-        transaction.status = 'in_progress'
-
-        await transaction.save()
       }
       await this.plotFilesRepo.update(
         id,
@@ -388,18 +390,20 @@ export class PlotFilesService {
 
           await file.save()
           
-          if(file.unitPrice == assignmentInfo.unitPrice){
-            const transaction = new Transaction();
-            transaction.fileNo = file.fileNo;
-            transaction.userId = file.assignedTo;
-            transaction.societyName = file.projectName;
-            transaction.productType = file.plotType;
-            transaction.plotArea = file.fileType;
-            transaction.totalPricePayable = file.unitPrice;
-            transaction.status = 'in_progress'
+          // if(file.unitPrice == assignmentInfo.unitPrice){
+          //   const transaction = new Transaction();
+          //   transaction.fileNo = file.fileNo;
+          //   transaction.sellerId = file.assignedTo;
+          //   transaction.buyerId = file.recievedBy;
+          //   transaction.societyName = file.projectName;
+          //   transaction.productType = file.plotType;
+          //   transaction.plotArea = file.fileType;
+          //   transaction.totalPricePayable = file.unitPrice;
+          //   transaction.remainingBalancePayable = assignmentInfo.remainingBalancePayable;
+          //   transaction.status = 'in_progress'
     
-            await transaction.save()
-          }
+          //   await transaction.save()
+          // }
 
         await this.createFileRecord(file, 'ASSIGNMENT_CHANGE')
         files.push(file)
@@ -466,6 +470,9 @@ export class PlotFilesService {
             }
           }
         }
+
+        let society = await this.societyRepo.findOne({where:{societyName: element.Project_Name}})
+        if(!society) throw new NotFoundException(`No society with the name ${element.Project_Name} exists`)
 
         let dateIssued = this.ExcelDateToJSDate(element.Issued_Date)
         let dateReceived = this.ExcelDateToJSDate(element.Received_Date)

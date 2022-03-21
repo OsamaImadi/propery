@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { Transaction } from './entity/transactions.entity';
 import { PgParams, PaginationParams, Pagination } from '@tfarras/nestjs-typeorm-pagination';
+import { TransactionDto } from './dto/transactions.dto';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -29,6 +30,13 @@ export class TransactionsController {
   getbyId(@Param() params
   ) {
     return this.service.getOne(params.id);
+  }
+ 
+  @Post()
+  create(
+    @Body() trans: TransactionDto,
+  ) {
+    return this.service.createTransaction(trans);
   }
  
   @Put(':id')

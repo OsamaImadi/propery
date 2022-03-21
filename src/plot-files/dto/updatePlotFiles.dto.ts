@@ -64,5 +64,9 @@ export class UpdatePlotFilesDto {
 
   @IsNumber()
   @IsOptional()
+  remainingBalancePayable: number;
+
+  @IsNumber()
+  @IsOptional()
   discountPercentage: number;
 }

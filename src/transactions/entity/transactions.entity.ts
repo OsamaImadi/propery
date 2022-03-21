@@ -15,6 +15,16 @@ export class Transaction extends PaginateableBaseEntity {
     id: number;
 
     @Column({
+      nullable: true
+    })
+    transactionId:string;
+
+    @Column({
+      nullable: true
+    })
+    invoiceId:string;
+
+    @Column({
       nullable: false
     })
     fileNo:string;
@@ -22,7 +32,12 @@ export class Transaction extends PaginateableBaseEntity {
     @Column({
       nullable: false
     })
-    userId:string;
+    buyerId:string;
+
+    @Column({
+      nullable: false
+    })
+    sellerId:string;
 
     @Column({
       nullable: false
