@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { Transaction } from './entity/transactions.entity';
 import { PgParams, PaginationParams, Pagination } from '@tfarras/nestjs-typeorm-pagination';
@@ -45,5 +45,12 @@ export class TransactionsController {
     @Body() trans: any,
   ) {
     return this.service.update(params.id, trans);
+  }
+    
+  @Delete('/clear')
+  deleteAll(
+    @Param() params
+  ) {
+    return this.service.truncate();
   }
 }

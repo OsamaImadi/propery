@@ -5,10 +5,11 @@ import { Transaction } from './entity/transactions.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlotFiles } from 'src/plot-files/plot-files.entity';
 import { User } from './../user/user.entity';
+import { Admin } from 'src/admin/admin.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Transaction, User, PlotFiles]),
+  TypeOrmModule.forFeature([Transaction, User, PlotFiles, Admin]),
   ],
   controllers: [TransactionsController],
   providers: [TransactionsService]

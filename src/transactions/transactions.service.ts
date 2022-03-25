@@ -5,12 +5,13 @@ import { TransactionDto } from './dto/transactions.dto';
 import { Transaction } from './entity/transactions.entity';
 import { User } from './../user/user.entity';
 import { PlotFiles } from 'src/plot-files/plot-files.entity';
+import { Admin } from 'src/admin/admin.entity';
 
 @Injectable()
 export class TransactionsService {
   constructor(
     @InjectRepository(Transaction) private transactionRepo: Repository<Transaction>,
-    @InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(Admin) private adminRepo: Repository<Admin>,
     @InjectRepository(PlotFiles) private plotFilesRepo: Repository<PlotFiles>,
   ) { }
 
@@ -28,8 +29,8 @@ export class TransactionsService {
 
   async createTransaction(transaction: TransactionDto){
     try{
-      const seller = await this.userRepo.findOne({where:{id: transaction.sellerId }});
-      const buyer = await this.userRepo.findOne({where:{id: transaction.buyerId }});
+      const seller = await this.adminRepo.findOne({where:{id: transaction.sellerId }});
+      const buyer = await this.adminRepo.findOne({where:{id: transaction.buyerId }});
       const file = await this.plotFilesRepo.findOne({where:{fileNo: transaction.fileNo }});
 
       if(!seller) throw new NotFoundException('Seller not found')
@@ -39,9 +40,9 @@ export class TransactionsService {
       let newTransaction = Transaction.create(transaction);
       
       let newTrans = await newTransaction.save()
-      buyer.totalRemainingAmount = buyer.totalRemainingAmount + newTrans.remainingBalancePayable;
+      buyer.totalRemainingAmount = buyer.totalRemainingAmount - newTrans.remainingBalancePayable;
       await buyer.save()
-      seller.totalRemainingAmount = seller.totalRemainingAmount - newTrans.remainingBalancePayable;
+      seller.totalRemainingAmount = seller.totalRemainingAmount + newTrans.remainingBalancePayable;
       await seller.save()
       newTrans.transactionId = `Tran-${newTrans.id}`
 
@@ -79,4 +80,7 @@ export class TransactionsService {
     
   }
   
+  async truncate(): Promise<void> {
+    return await this.transactionRepo.clear();
+  }
 }

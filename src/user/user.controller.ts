@@ -47,6 +47,13 @@ export class UserController {
     return this.service.updateUser(user, params.id);
   }
 
+  @Delete('/clear')
+  deleteAll(
+    @Param() params
+  ) {
+    return this.service.truncate();
+  }
+
   @Delete('/:id')
   delete(
     @Param() params
