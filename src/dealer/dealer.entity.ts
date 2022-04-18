@@ -15,7 +15,7 @@ import { hashIt } from 'src/admin/admin.entity';
 @Entity()
 export class Dealer extends PaginateableBaseEntity {
 
-    @PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn()
     id: number;
 
     @Column()

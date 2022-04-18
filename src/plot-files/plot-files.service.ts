@@ -187,42 +187,46 @@ export class PlotFilesService {
     try{
       let issuer:`user` | 'admin' | 'dealer' = 'admin', recieving:`user` | 'admin' | 'dealer' = 'admin'
       let assignee:any
-      if(+file.assignedTo){
+      if(file.assignedToEntity=='admin'){
         assignee = await this.adminRepo.findOne(file.assignedTo)
         issuer='admin'
       }
-      if(!assignee){
+      if(file.assignedToEntity=='dealer'){
         assignee = await this.dealerRepo.findOne(file.assignedTo)
         issuer='dealer'
-        if(!assignee){
-          assignee = await this.userRepo.findOne(file.assignedTo)
-          issuer = 'user'
-        }
-        if(!assignee){
+      }
+      if(file.assignedToEntity=='user'){
+        assignee = await this.userRepo.findOne(file.assignedTo)
+        issuer = 'user'
+      }
+      if(!assignee){
         throw new NotFoundException('Assignee not found')
       }
-    }
 
       let reciever:any
-      if(+file.recievedBy){
+      if(file.recievedByEntity=='admin'){
         reciever = await this.adminRepo.findOne(file.recievedBy)
         recieving='admin'
       }
-      if(!reciever){
+      if(file.recievedByEntity=='dealer'){
         reciever = await this.dealerRepo.findOne(file.recievedBy)
         recieving = 'dealer'
-        if(!reciever){
-          reciever = await this.userRepo.findOne(file.recievedBy)
-          recieving = 'user'
-        }
-        if(!reciever){
-          throw new NotFoundException('Reciever found')
-        }
+      }
+      if(file.recievedByEntity=='user'){
+        reciever = await this.userRepo.findOne(file.recievedBy)
+        recieving = 'user'
+      }
+      if(!reciever){
+        throw new NotFoundException('Reciever not found')
       }
 
       let society = await this.societyRepo.findOne({where:{societyName: file.projectName}})
       if(!society) throw new NotFoundException(`No society with the name ${file.projectName} exists`)
 
+      let existingFile = await this.plotFilesRepo.findOne({where:{projectName:file.projectName, fileType: file.fileType}})
+      if(existingFile && existingFile.unitPrice != file.unitPrice){
+        throw new BadRequestException('File of same size in a society should have same price')
+      }
       const plot = new PlotFiles();
 
       plot.projectName = file.projectName;
@@ -248,6 +252,7 @@ export class PlotFilesService {
       
       return newFile;
     }catch(err){
+      console.log(err)
       if(err.errno==1062){
         throw new ConflictException('File already exists')
       }
@@ -270,42 +275,40 @@ export class PlotFilesService {
         throw new NotFoundException('No file found')
       }
       let issuer: string, recieving: string;
-      if(file.assignedTo){
-        let assignee:any
-          if(+file.assignedTo){
-            assignee = await this.adminRepo.findOne(file.assignedTo)
-            issuer='admin'
-          }
-          if(!assignee){
-            assignee = await this.dealerRepo.findOne(file.assignedTo)
-            issuer='dealer'
-            if(!assignee){
-              assignee = await this.userRepo.findOne(file.assignedTo)
-              issuer = 'user'
-            }
-            if(!assignee){
-            throw new NotFoundException('Assignee not found')
-          }
-        }
+      let assignee:any
+      if(file.assignedToEntity=='admin'){
+        assignee = await this.adminRepo.findOne(file.assignedTo)
+        issuer='admin'
       }
-      if(file.recievedBy){
-        let reciever:any
-        if(+file.recievedBy){
-          reciever = await this.adminRepo.findOne(file.recievedBy)
-          recieving='admin'
-        }
-        if(!reciever){
-          reciever = await this.dealerRepo.findOne(file.recievedBy)
-          recieving = 'dealer'
-          if(!reciever){
-            reciever = await this.userRepo.findOne(file.recievedBy)
-            recieving = 'user'
-          }
-          if(!reciever){
-            throw new NotFoundException('Reciever found')
-          }
-        }
+      if(file.assignedToEntity=='dealer'){
+        assignee = await this.dealerRepo.findOne(file.assignedTo)
+        issuer='dealer'
       }
+      if(file.assignedToEntity=='user'){
+        assignee = await this.userRepo.findOne(file.assignedTo)
+        issuer = 'user'
+      }
+      if(!assignee){
+        throw new NotFoundException('Assignee not found')
+      }
+
+      let reciever:any
+      if(file.recievedByEntity=='admin'){
+        reciever = await this.adminRepo.findOne(file.recievedBy)
+        recieving='admin'
+      }
+      if(file.recievedByEntity=='dealer'){
+        reciever = await this.dealerRepo.findOne(file.recievedBy)
+        recieving = 'dealer'
+      }
+      if(file.recievedByEntity=='user'){
+        reciever = await this.userRepo.findOne(file.recievedBy)
+        recieving = 'user'
+      }
+      if(!reciever){
+        throw new NotFoundException('Reciever not found')
+      }
+
 
       if(file.projectName){
         let society = await this.societyRepo.findOne({where:{societyName: file.projectName}})

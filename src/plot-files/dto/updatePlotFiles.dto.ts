@@ -29,6 +29,10 @@ export class UpdatePlotFilesDto {
   @IsString()
   @IsOptional()
   assignedTo: string;
+  
+  @IsString()
+  @IsOptional()
+  assignedToEntity: string;
 
   @IsString()
   @IsOptional()
@@ -37,6 +41,10 @@ export class UpdatePlotFilesDto {
   @IsString()
   @IsOptional()
   recievedBy: string;
+  
+  @IsString()
+  @IsOptional()
+  recievedByEntity: string;
 
   @IsString()
   @IsOptional()

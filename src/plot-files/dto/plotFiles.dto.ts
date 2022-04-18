@@ -32,12 +32,20 @@ export class PlotFilesDto {
   assignedTo: string;
 
   @IsString()
+  @IsOptional()
+  assignedToEntity: string;
+
+  @IsString()
   @IsNotEmpty()
   assignedDate: string;
 
   @IsString()
   @IsNotEmpty()
   recievedBy: string;
+
+  @IsString()
+  @IsOptional()
+  recievedByEntity: string;
 
   @IsString()
   @IsNotEmpty()
