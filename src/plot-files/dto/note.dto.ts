@@ -18,4 +18,8 @@ export class NotesDto {
   @IsString()
   @IsNotEmpty()
   createdBy: string;
+  
+  @IsString()
+  @IsOptional()
+  creatorEntity: string;
 }

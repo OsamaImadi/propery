@@ -110,7 +110,17 @@ export class PlotFilesService {
   async createNote(notes: NotesDto){
     try{
 
-      let assignee = await this.adminRepo.findOne(notes.createdBy)
+      let assignee;
+      if(notes.creatorEntity=='admin'){
+        assignee = await this.adminRepo.findOne(notes.createdBy)
+      }
+      if(notes.creatorEntity=='dealer'){
+        assignee = await this.dealerRepo.findOne(notes.createdBy)
+      }
+      if(notes.creatorEntity=='user'){
+        assignee = await this.userRepo.findOne(notes.createdBy)
+      }
+
       if(!assignee){
         throw new NotFoundException('creator not found')
       }
@@ -127,6 +137,7 @@ export class PlotFilesService {
       note.fileNo = notes.fileNo;
       note.createdBy = ""+assignee.id;
       note.note = notes.note;
+      note.creatorEntity = notes.creatorEntity;
       
       let newNote = await this.fileNotesRepo.save(note);
       
@@ -148,7 +159,17 @@ export class PlotFilesService {
   async createNotesByArray(notes: NotesBulkDto){
     try{
 
-      let assignee = await this.adminRepo.findOne(notes.createdBy)
+      let assignee;
+      if(notes.creatorEntity=='admin'){
+        assignee = await this.adminRepo.findOne(notes.createdBy)
+      }
+      if(notes.creatorEntity=='dealer'){
+        assignee = await this.dealerRepo.findOne(notes.createdBy)
+      }
+      if(notes.creatorEntity=='user'){
+        assignee = await this.userRepo.findOne(notes.createdBy)
+      }
+
       if(!assignee){
         throw new NotFoundException('creator not found')
       }

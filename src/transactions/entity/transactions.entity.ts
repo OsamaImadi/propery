@@ -35,9 +35,19 @@ export class Transaction extends PaginateableBaseEntity {
     buyerId:string;
 
     @Column({
+      nullable: true
+    })
+    buyerEntity:string;
+
+    @Column({
       nullable: false
     })
     sellerId:string;
+
+    @Column({
+      nullable: true
+    })
+    sellerEntity:string;
 
     @Column({
       nullable: false

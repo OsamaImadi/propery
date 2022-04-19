@@ -17,7 +17,15 @@ export class TransactionDto {
   buyerId: string;
 
   @IsString()
+  @IsOptional()
+  buyerEntity: string;
+
+  @IsString()
   sellerId: string;
+
+  @IsString()
+  @IsOptional()
+  sellerEntity: string;
 
   @IsString()
   societyName: string;

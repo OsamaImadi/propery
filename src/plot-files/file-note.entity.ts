@@ -29,6 +29,11 @@ export class FileNotes extends PaginateableBaseEntity {
     })
     createdBy:string;
 
+    @Column({ 
+      nullable: true
+    })
+    creatorEntity:string;
+
     @CreateDateColumn({ type: 'timestamp' })
     createdAt!: Date;
   

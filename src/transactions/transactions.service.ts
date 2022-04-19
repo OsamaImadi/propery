@@ -6,12 +6,15 @@ import { Transaction } from './entity/transactions.entity';
 import { User } from './../user/user.entity';
 import { PlotFiles } from 'src/plot-files/plot-files.entity';
 import { Admin } from 'src/admin/admin.entity';
+import { Dealer } from 'src/dealer/dealer.entity';
 
 @Injectable()
 export class TransactionsService {
   constructor(
     @InjectRepository(Transaction) private transactionRepo: Repository<Transaction>,
     @InjectRepository(Admin) private adminRepo: Repository<Admin>,
+    @InjectRepository(Dealer) private dealerRepo: Repository<Dealer>,
+    @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(PlotFiles) private plotFilesRepo: Repository<PlotFiles>,
   ) { }
 
@@ -29,12 +32,37 @@ export class TransactionsService {
 
   async createTransaction(transaction: TransactionDto){
     try{
-      const seller = await this.adminRepo.findOne({where:{id: transaction.sellerId }});
-      const buyer = await this.adminRepo.findOne({where:{id: transaction.buyerId }});
+      let seller:any
+      if(transaction.sellerEntity=='admin'){
+        seller = await this.adminRepo.findOne(transaction.sellerId)
+
+      }
+      if(transaction.sellerEntity=='dealer'){
+        seller = await this.dealerRepo.findOne(transaction.sellerId)
+
+      }
+      if(transaction.sellerEntity=='user'){
+        seller = await this.userRepo.findOne(transaction.sellerId)
+      }
+      if(!seller){
+        throw new NotFoundException('Seller not found')
+      }
+
+      let buyer:any
+      if(transaction.buyerEntity=='admin'){
+        buyer = await this.adminRepo.findOne(transaction.buyerId)
+      }
+      if(transaction.buyerEntity=='dealer'){
+        buyer = await this.dealerRepo.findOne(transaction.buyerId)
+      }
+      if(transaction.buyerEntity=='user'){
+        buyer = await this.userRepo.findOne(transaction.buyerId)
+      }
+      if(!buyer){
+        throw new NotFoundException('buyer not found')
+      }
       const file = await this.plotFilesRepo.findOne({where:{fileNo: transaction.fileNo }});
 
-      if(!seller) throw new NotFoundException('Seller not found')
-      if(!buyer) throw new NotFoundException('buyer not found')
       if(!file) throw new NotFoundException('file not found')
 
       let newTransaction = Transaction.create(transaction);
@@ -45,6 +73,8 @@ export class TransactionsService {
       seller.totalRemainingAmount = seller.totalRemainingAmount + newTrans.remainingBalancePayable;
       await seller.save()
       newTrans.transactionId = `Tran-${newTrans.id}`
+      newTrans.buyerEntity = transaction.buyerEntity;
+      newTrans.sellerEntity = transaction.sellerEntity;
 
       if(!newTrans.status) newTrans.status == "in_progress"
       

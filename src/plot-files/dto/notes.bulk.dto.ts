@@ -15,6 +15,10 @@ export class NotesBulkDto {
   @IsNotEmpty()
   createdBy: string;
 
+  @IsString()
+  @IsNotEmpty()
+  creatorEntity: string;
+
   @IsArray()
   @IsNotEmpty()
   ids: [];
