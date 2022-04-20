@@ -355,6 +355,10 @@ export class PlotFilesService {
       }else if(file.assignedTo == fileExisiting.assignedTo){
         statusChange = "PRICE_CHANGE"
       }
+
+      delete file.assignedToEntity;
+      delete file.recievedByEntity;
+
       await this.plotFilesRepo.update(
         id,
         {...file, lastfileAssigner: issuer, lastfileReciever: recieving}
