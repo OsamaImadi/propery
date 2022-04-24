@@ -37,12 +37,12 @@ export class RolesService {
   async createRoles(rolesObj: RolesDto){
     try{
       let user
-      if(rolesObj.userType=='Admin'){
+      if(rolesObj.userType=='admin'){
         user = await this.adminRepo.findOne(rolesObj.userId)
         let existing = await this.rolesRepo.findOne({ where: { userId: rolesObj.userId, userType: 'Admin' } });
         if(existing) throw new ConflictException("Role already defined for this user")
       }
-      if(rolesObj.userType == 'Dealer'){
+      if(rolesObj.userType == 'dealer'){
         user = await this.dealerRepo.findOne(rolesObj.userId)
         let existing = await this.rolesRepo.findOne({ where: { userId: rolesObj.userId, userType: 'Dealer' } });
         if(existing) throw new ConflictException("Role already defined for this user")
@@ -70,10 +70,10 @@ export class RolesService {
   async updateRole(rolesObj: RolesDto, id:string | number){
     try{
       let user
-      if(rolesObj.userType=='Admin'){
+      if(rolesObj.userType=='admin'){
         user = await this.adminRepo.findOne(rolesObj.userId)
       }
-      if(rolesObj.userType == 'Dealer'){
+      if(rolesObj.userType == 'dealer'){
         user = await this.dealerRepo.findOne(rolesObj.userId)
       }
       if(!user) throw new NotFoundException('User not found')
