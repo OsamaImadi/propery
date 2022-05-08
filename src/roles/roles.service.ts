@@ -39,12 +39,13 @@ export class RolesService {
       let user
       if(rolesObj.userType=='admin'){
         user = await this.adminRepo.findOne(rolesObj.userId)
-        let existing = await this.rolesRepo.findOne({ where: { userId: rolesObj.userId, userType: 'Admin' } });
+        console.log("Here: ", user.id)
+        let existing = await this.rolesRepo.findOne({ where: { userId: rolesObj.userId, userType: 'admin' } });
         if(existing) throw new ConflictException("Role already defined for this user")
       }
       if(rolesObj.userType == 'dealer'){
         user = await this.dealerRepo.findOne(rolesObj.userId)
-        let existing = await this.rolesRepo.findOne({ where: { userId: rolesObj.userId, userType: 'Dealer' } });
+        let existing = await this.rolesRepo.findOne({ where: { userId: rolesObj.userId, userType: 'dealer' } });
         if(existing) throw new ConflictException("Role already defined for this user")
       }
       if(!user) throw new NotFoundException('User not found')
