@@ -15,8 +15,11 @@ export class RecordsService {
 
   
   async getAll() {
-    let record = await this.recordsRepo.find()
-    return record
+    let response = await this.recordsRepo.find()
+    response.forEach(rec=>{
+      console.log(rec.fileObject.fileNo)
+    })
+    return response
   }
 
   async getOne(id: number) {
