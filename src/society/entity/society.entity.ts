@@ -25,7 +25,8 @@ export class Society extends PaginateableBaseEntity {
     societyId:string;
     
     @Column({ 
-      nullable: true
+      nullable: true,
+      select:false
     })
     contactNo:string;
     
@@ -40,7 +41,8 @@ export class Society extends PaginateableBaseEntity {
     ownerPhoneNumber:string;
     
     @Column({ 
-      nullable: true
+      nullable: true,
+      select:false
     })
     area:string;
     
@@ -65,7 +67,8 @@ export class Society extends PaginateableBaseEntity {
     longitude:string;
     
     @Column({ 
-      nullable: true
+      nullable: true,
+      select:false
     })
     type:string;
     
@@ -75,24 +78,27 @@ export class Society extends PaginateableBaseEntity {
     developerCompanyName:string;
     
     @Column({ 
-      nullable: true
+      nullable: true,
+      select:false
     })
     developerCompanyPhone:string;
     
     @Column({ 
-      nullable: true
+      nullable: true,
+      select: false
     })
     developerCompanyEmail:string;
     
     @Column({ 
-      nullable: true
+      nullable: true,
+      select: false
     })
     developerCompanyAddress:string;
 
-    @Column("simple-array", { nullable: true })
+    @Column("simple-array", { nullable: true, select: false })
     developerCompanyPhonePreviousProjects: string[];
 
-    @Column("simple-array", { nullable: true })
+    @Column("simple-array", { nullable: true, select: false })
     ownerPreviousProjects: string[];
     
     @CreateDateColumn({ type: 'timestamp' })
