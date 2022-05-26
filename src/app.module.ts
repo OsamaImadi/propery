@@ -18,6 +18,8 @@ import { RolesModule } from './roles/roles.module';
 import { SocietyModule } from './society/society.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { InvoiceModule } from './invoice/invoice.module';
+import { AllotmentLetterModule } from './allotment-letter/allotment-letter.module';
+import { PaymentPlanModule } from './payment-plan/payment-plan.module';
 
 dotenv.config();
 
@@ -50,6 +52,8 @@ dotenv.config();
     SocietyModule,
     TransactionsModule,
     InvoiceModule,
+    AllotmentLetterModule,
+    PaymentPlanModule,
   ],
   controllers: [AppController],
   providers: [AppService],

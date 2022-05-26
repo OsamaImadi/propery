@@ -8,7 +8,7 @@ import {
 import { PaginateableBaseEntity } from '@tfarras/nestjs-typeorm-pagination';
 
 @Entity()
-export class Society extends PaginateableBaseEntity {
+export class Allotment extends PaginateableBaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -16,90 +16,73 @@ export class Society extends PaginateableBaseEntity {
     @Column({ 
       nullable: false
     })
-    societyName:string;
+    fileNo:string;
+    
+    @Column({ 
+      nullable: false
+    })
+    name:string;
     
     @Column({ 
       nullable: true
     })
-    societyId:string;
-    
-    @Column({ 
-      nullable: true,
-      select:false
-    })
-    contactNo:string;
+    firstRelativeName:string;
     
     @Column({ 
       nullable: true
     })
-    ownerName:string;
+    cnic:string;
     
     @Column({ 
       nullable: true
     })
-    ownerPhoneNumber:string;
-    
-    @Column({ 
-      nullable: true,
-      select:false
-    })
-    area:string;
+    phoneNumber:string;
     
     @Column({ 
       nullable: true
     })
-    legalStatus:string;
+    address:string;
     
     @Column({ 
       nullable: true
     })
-    map:string;
+    buyerId:string;
     
     @Column({ 
       nullable: true
     })
-    latitude:string;
+    buyerEntity:string;
     
     @Column({ 
       nullable: true
     })
-    longitude:string;
-    
-    @Column({ 
-      nullable: true,
-      select:false
-    })
-    type:string;
+    sellerId:string;
     
     @Column({ 
       nullable: true
     })
-    developerCompanyName:string;
+    sellerEntity:string;
     
     @Column({ 
-      nullable: true,
-      select:false
+      nullable: true
     })
-    developerCompanyPhone:string;
+    transactionId:string;
     
     @Column({ 
-      nullable: true,
-      select: false
+      nullable: true
     })
-    developerCompanyEmail:string;
+    securityCode:string;
     
     @Column({ 
-      nullable: true,
-      select: false
+      nullable: true
     })
-    developerCompanyAddress:string;
+    fileType:string;
+    
+    @Column({ 
+      nullable: true
+    })
+    plotSize:string;
 
-    @Column("simple-array", { nullable: true, select: false })
-    developerCompanyPhonePreviousProjects: string[];
-
-    @Column("simple-array", { nullable: true, select: false })
-    ownerPreviousProjects: string[];
-    
     @CreateDateColumn({ type: 'timestamp' })
     createdAt!: Date;
   

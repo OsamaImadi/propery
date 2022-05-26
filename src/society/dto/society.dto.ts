@@ -12,7 +12,7 @@ export class SocietyDto {
   societyName: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   societyId: string;
 
   @IsString()
