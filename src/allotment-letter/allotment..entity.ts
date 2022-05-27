@@ -31,6 +31,16 @@ export class Allotment extends PaginateableBaseEntity {
     @Column({ 
       nullable: true
     })
+    societyName:string;
+    
+    @Column({ 
+      nullable: true
+    })
+    societyId:string;
+    
+    @Column({ 
+      nullable: true
+    })
     cnic:string;
     
     @Column({ 

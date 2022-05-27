@@ -62,4 +62,12 @@ export class AllotmentDto {
   @IsOptional()
   plotSize: string;
 
+  @IsString()
+  @IsOptional()
+  societyName: string;
+
+  @IsString()
+  @IsOptional()
+  societyId: string;
+
 }
